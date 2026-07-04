@@ -8,6 +8,7 @@
         "bun-types": "^1.3.14",
       },
       "devDependencies": {
+        "typescript": "^6.0.3",
         "zod": "3.23.8",
       },
     },
@@ -81,6 +82,7 @@
         "boxfw-core": "workspace:*",
         "boxfw-db": "workspace:*",
         "boxfw-i18n": "workspace:*",
+        "boxfw-logger": "workspace:*",
         "boxfw-openapi": "workspace:*",
         "boxfw-validator": "workspace:*",
         "zod": "^3.23.0",
@@ -88,6 +90,16 @@
     },
     "packages/i18n": {
       "name": "boxfw-i18n",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/logger": {
+      "name": "boxfw-logger",
       "version": "0.1.0",
       "dependencies": {
         "boxfw-core": "^0.1.0",
@@ -135,6 +147,8 @@
 
     "boxfw-i18n": ["boxfw-i18n@workspace:packages/i18n"],
 
+    "boxfw-logger": ["boxfw-logger@workspace:packages/logger"],
+
     "boxfw-openapi": ["boxfw-openapi@workspace:packages/openapi"],
 
     "boxfw-validator": ["boxfw-validator@workspace:packages/validator"],
@@ -146,6 +160,8 @@
     "drizzle-orm": ["drizzle-orm@0.36.4", "https://registry.npmmirror.com/drizzle-orm/-/drizzle-orm-0.36.4.tgz", { "peerDependencies": { "@aws-sdk/client-rds-data": ">=3", "@cloudflare/workers-types": ">=3", "@electric-sql/pglite": ">=0.2.0", "@libsql/client": ">=0.10.0", "@libsql/client-wasm": ">=0.10.0", "@neondatabase/serverless": ">=0.10.0", "@op-engineering/op-sqlite": ">=2", "@opentelemetry/api": "^1.4.1", "@planetscale/database": ">=1", "@prisma/client": "*", "@tidbcloud/serverless": "*", "@types/better-sqlite3": "*", "@types/pg": "*", "@types/react": ">=18", "@types/sql.js": "*", "@vercel/postgres": ">=0.8.0", "@xata.io/client": "*", "better-sqlite3": ">=7", "bun-types": "*", "expo-sqlite": ">=14.0.0", "knex": "*", "kysely": "*", "mysql2": ">=2", "pg": ">=8", "postgres": ">=3", "react": ">=18", "sql.js": ">=1", "sqlite3": ">=5" }, "optionalPeers": ["@aws-sdk/client-rds-data", "@cloudflare/workers-types", "@electric-sql/pglite", "@libsql/client", "@libsql/client-wasm", "@neondatabase/serverless", "@op-engineering/op-sqlite", "@opentelemetry/api", "@planetscale/database", "@prisma/client", "@tidbcloud/serverless", "@types/better-sqlite3", "@types/pg", "@types/react", "@types/sql.js", "@vercel/postgres", "@xata.io/client", "better-sqlite3", "bun-types", "expo-sqlite", "knex", "kysely", "mysql2", "pg", "postgres", "react", "sql.js", "sqlite3"] }, "sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA=="],
 
     "hono": ["hono@4.12.27", "https://registry.npmmirror.com/hono/-/hono-4.12.27.tgz", {}, "sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q=="],
+
+    "typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 
     "undici-types": ["undici-types@8.3.0", "https://registry.npmmirror.com/undici-types/-/undici-types-8.3.0.tgz", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
 

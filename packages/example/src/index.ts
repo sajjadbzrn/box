@@ -5,12 +5,16 @@ import { z } from "zod";
 import { localeDetect, t, rtlMeta, bilingualError } from "boxfw-i18n";
 import { jwt, signJwt, session } from "boxfw-auth";
 import { openapi } from "boxfw-openapi";
+import { createLogger, requestLogger } from "boxfw-logger";
 
 // ============================================================
 // Box — Full Feature Demo
 // ============================================================
 
 const app = new Box();
+
+// ---- Structured logger ----
+const log = createLogger({ level: "debug", name: "box-demo" });
 
 // ---- Runtime env (Bun) ----
 app.setEnv(bunEnv());
@@ -34,15 +38,8 @@ app.use(session({ optional: true }));
 // For JWT: set JWT_SECRET env var, then uncomment:
 // app.use(jwt({ secret: c.env("JWT_SECRET") ?? "dev-secret", optional: true }));
 
-// ---- Logging middleware ----
-app.use(async (c, next) => {
-  const start = Date.now();
-  const res = await next();
-  console.log(
-    `${c.method} ${c.path} ${res.status} ${Date.now() - start}ms [${c.locale}]`,
-  );
-  return res;
-});
+// ---- Request logging middleware ----
+app.use(requestLogger({ logger: log, logQuery: true }));
 
 app.use(async (c, next) => {
   c.header("X-Powered-By", "Box");
@@ -91,10 +88,8 @@ app.post(
   ),
 );
 
-// 3. Protect route with JWT
+// 3. Current user
 app.get("/me", (c) => {
-  // Uncomment to require auth:
-  // if (!c.jwt) return c.status(401).json({ error: "Unauthorized" });
   return c.json({ user: { id: "demo", name: "Box User" }, locale: c.locale });
 });
 
@@ -175,7 +170,7 @@ app.get(
 // ---- WebSocket chat ----
 app.ws("/chat", {
   open: (ws) => {
-    console.log("[ws] Client connected");
+    log.info("WebSocket client connected");
     ws.send(
       JSON.stringify({ type: "welcome", message: "Connected to Box chat!" }),
     );
@@ -183,11 +178,11 @@ app.ws("/chat", {
   message: (ws, data) => {
     const msg =
       typeof data === "string" ? data : new TextDecoder().decode(data);
-    console.log(`[ws] Received: ${msg}`);
+    log.info("WebSocket message received", { message: msg });
     ws.send(JSON.stringify({ type: "echo", message: `You said: ${msg}` }));
   },
   close: (ws) => {
-    console.log("[ws] Client disconnected");
+    log.info("WebSocket client disconnected");
   },
 });
 
@@ -195,14 +190,13 @@ app.ws("/chat", {
 // Start server
 // ============================================================
 const server = app.listen({ port: 3000 });
-console.log(`
-╔══════════════════════════════════════╗
-║  Box Framework — Full Feature Demo   ║
-╠══════════════════════════════════════╣
-║  Server: ${server.url.href.padEnd(27)}║
-║  i18n:   en, fa (Accept-Language)    ║
-║  Auth:   JWT + Session               ║
-║  WS:     /chat                       ║
-║  Docs:   /openapi.json               ║
-╚══════════════════════════════════════╝
-`);
+
+log.info(`Server started`, { url: server.url.href, port: 3000 });
+log.info("Routes:");
+log.info("  GET  /           — Home with i18n + RTL");
+log.info("  POST /login      — JWT login");
+log.info("  GET  /me         — Current user");
+log.info("  GET  /item/:id   — Item with i18n errors");
+log.info("  POST /echo       — Body validation demo");
+log.info("  GET  /openapi.json — OpenAPI spec");
+log.info("  WS   /chat       — WebSocket chat");

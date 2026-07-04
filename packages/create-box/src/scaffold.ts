@@ -77,6 +77,7 @@ function genPackageJson(opts: ProjectOptions): string {
   }
   if (opts.i18n) deps["boxfw-i18n"] = "^0.1.0";
   if (opts.auth) deps["boxfw-auth"] = "^0.1.0";
+  if (opts.logger) deps["boxfw-logger"] = "^0.1.0";
 
   if (opts.runtime === "workers" || opts.runtime === "both") {
     deps["boxfw-adapters"] = "^0.1.0";
@@ -99,6 +100,9 @@ function genPackageJson(opts: ProjectOptions): string {
       type: "module",
       scripts,
       dependencies: deps,
+      devDependencies: {
+        "bun-types": "latest",
+      },
     },
     null,
     2,
@@ -125,11 +129,19 @@ function genTsConfig(): string {
 
 function genMainFile(opts: ProjectOptions): string {
   let imports = 'import { Box } from "boxfw-core";\n';
+  if (opts.logger) imports += 'import { createLogger, requestLogger } from "boxfw-logger";\n';
   if (opts.i18n) imports += 'import { localeDetect, t, rtlMeta } from "boxfw-i18n";\n';
   if (opts.orm === "drizzle") imports += 'import { D, db, typedDb } from "./db";\n';
   if (opts.orm === "drizzle") imports += 'import * as schema from "../drizzle/schema";\n';
 
   let body = "\nconst app = new Box();\n";
+
+  if (opts.logger) {
+    body += `\n// Structured request logging
+const log = createLogger({ level: "debug" });
+app.use(requestLogger({ logger: log }));
+`;
+  }
 
   if (opts.i18n) {
     body += `
@@ -175,12 +187,21 @@ app.get("/users", async (c) => {
 
   // Server start — conditional per runtime target
   if ("${opts.runtime}" !== "workers") {
-    body += `
+    if (opts.logger) {
+      body += `
+
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+app.listen({ port });
+log.info(\`Server running at http://localhost:\${port}\`);
+`;
+    } else {
+      body += `
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.listen({ port });
 console.log(\`Server running at http://localhost:\${port}\`);
 `;
+    }
   }
 
   return imports + body;

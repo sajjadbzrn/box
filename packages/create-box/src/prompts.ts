@@ -6,6 +6,7 @@ export interface ProjectOptions {
   orm?: "drizzle" | "none";
   i18n: boolean;
   auth: boolean;
+  logger: boolean;
 }
 
 export async function main(): Promise<void> {
@@ -43,6 +44,9 @@ async function promptUser(): Promise<ProjectOptions> {
 
   const authChoice = await ask("Include auth module? (yes / no):", "no");
   answers.auth = authChoice.toLowerCase() === "yes";
+
+  const loggerChoice = await ask("Include structured logger? (yes / no):", "yes");
+  answers.logger = loggerChoice.toLowerCase() === "yes";
 
   return answers as ProjectOptions;
 }

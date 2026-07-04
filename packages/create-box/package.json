@@ -1,6 +1,6 @@
 {
   "name": "create-boxfw",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Scaffold a new Box Framework project with interactive prompts",
   "type": "module",
   "bin": {

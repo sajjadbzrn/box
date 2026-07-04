@@ -11,6 +11,7 @@
     "boxfw-i18n": "workspace:*",
     "boxfw-auth": "workspace:*",
     "boxfw-openapi": "workspace:*",
+    "boxfw-logger": "workspace:*",
     "zod": "^3.23.0"
   }
 }

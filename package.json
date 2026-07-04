@@ -12,7 +12,8 @@
     "packages/openapi",
     "packages/create-box",
     "packages/example",
-    "packages/benchmark"
+    "packages/benchmark",
+    "packages/logger"
   ],
   "scripts": {
     "test": "bun test",
@@ -32,10 +33,12 @@
     "publish:i18n": "cd packages/i18n && npm publish --access public && cd ../..",
     "publish:auth": "cd packages/auth && npm publish --access public && cd ../..",
     "publish:openapi": "cd packages/openapi && npm publish --access public && cd ../..",
+    "publish:logger": "cd packages/logger && npm publish --access public && cd ../..",
     "publish:create-box": "cd packages/create-box && npm publish --access public && cd ../..",
-    "publish:all": "bun run publish:core && bun run publish:adapters && bun run publish:validator && bun run publish:db && bun run publish:i18n && bun run publish:auth && bun run publish:openapi && bun run publish:create-box"
+    "publish:all": "bun run publish:core && bun run publish:adapters && bun run publish:validator && bun run publish:db && bun run publish:i18n && bun run publish:auth && bun run publish:openapi && bun run publish:logger && bun run publish:create-box"
   },
   "devDependencies": {
+    "typescript": "^6.0.3",
     "zod": "3.23.8"
   },
   "dependencies": {
