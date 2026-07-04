@@ -1,0 +1,158 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "box",
+      "dependencies": {
+        "bun-types": "^1.3.14",
+      },
+      "devDependencies": {
+        "zod": "3.23.8",
+      },
+    },
+    "packages/adapters": {
+      "name": "boxfw-adapters",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/auth": {
+      "name": "boxfw-auth",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/benchmark": {
+      "name": "box-benchmark",
+      "version": "0.0.0",
+      "dependencies": {
+        "boxfw-core": "workspace:*",
+        "hono": "^4",
+      },
+    },
+    "packages/core": {
+      "name": "boxfw-core",
+      "version": "0.1.0",
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/create-box": {
+      "name": "create-boxfw",
+      "version": "0.1.2",
+      "bin": {
+        "create-boxfw": "./src/index.ts",
+      },
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/db": {
+      "name": "boxfw-db",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+      "peerDependencies": {
+        "drizzle-orm": "^0.36",
+      },
+    },
+    "packages/example": {
+      "name": "box-example",
+      "version": "0.0.0",
+      "dependencies": {
+        "boxfw-adapters": "workspace:*",
+        "boxfw-auth": "workspace:*",
+        "boxfw-core": "workspace:*",
+        "boxfw-db": "workspace:*",
+        "boxfw-i18n": "workspace:*",
+        "boxfw-openapi": "workspace:*",
+        "boxfw-validator": "workspace:*",
+        "zod": "^3.23.0",
+      },
+    },
+    "packages/i18n": {
+      "name": "boxfw-i18n",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/openapi": {
+      "name": "boxfw-openapi",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+    "packages/validator": {
+      "name": "boxfw-validator",
+      "version": "0.1.0",
+      "dependencies": {
+        "boxfw-core": "^0.1.0",
+        "zod": "^3.23.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
+  },
+  "packages": {
+    "@types/node": ["@types/node@26.1.0", "https://registry.npmmirror.com/@types/node/-/node-26.1.0.tgz", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw=="],
+
+    "box-benchmark": ["box-benchmark@workspace:packages/benchmark"],
+
+    "box-example": ["box-example@workspace:packages/example"],
+
+    "boxfw-adapters": ["boxfw-adapters@workspace:packages/adapters"],
+
+    "boxfw-auth": ["boxfw-auth@workspace:packages/auth"],
+
+    "boxfw-core": ["boxfw-core@workspace:packages/core"],
+
+    "boxfw-db": ["boxfw-db@workspace:packages/db"],
+
+    "boxfw-i18n": ["boxfw-i18n@workspace:packages/i18n"],
+
+    "boxfw-openapi": ["boxfw-openapi@workspace:packages/openapi"],
+
+    "boxfw-validator": ["boxfw-validator@workspace:packages/validator"],
+
+    "bun-types": ["bun-types@1.3.14", "https://registry.npmmirror.com/bun-types/-/bun-types-1.3.14.tgz", { "dependencies": { "@types/node": "*" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
+
+    "create-boxfw": ["create-boxfw@workspace:packages/create-box"],
+
+    "drizzle-orm": ["drizzle-orm@0.36.4", "https://registry.npmmirror.com/drizzle-orm/-/drizzle-orm-0.36.4.tgz", { "peerDependencies": { "@aws-sdk/client-rds-data": ">=3", "@cloudflare/workers-types": ">=3", "@electric-sql/pglite": ">=0.2.0", "@libsql/client": ">=0.10.0", "@libsql/client-wasm": ">=0.10.0", "@neondatabase/serverless": ">=0.10.0", "@op-engineering/op-sqlite": ">=2", "@opentelemetry/api": "^1.4.1", "@planetscale/database": ">=1", "@prisma/client": "*", "@tidbcloud/serverless": "*", "@types/better-sqlite3": "*", "@types/pg": "*", "@types/react": ">=18", "@types/sql.js": "*", "@vercel/postgres": ">=0.8.0", "@xata.io/client": "*", "better-sqlite3": ">=7", "bun-types": "*", "expo-sqlite": ">=14.0.0", "knex": "*", "kysely": "*", "mysql2": ">=2", "pg": ">=8", "postgres": ">=3", "react": ">=18", "sql.js": ">=1", "sqlite3": ">=5" }, "optionalPeers": ["@aws-sdk/client-rds-data", "@cloudflare/workers-types", "@electric-sql/pglite", "@libsql/client", "@libsql/client-wasm", "@neondatabase/serverless", "@op-engineering/op-sqlite", "@opentelemetry/api", "@planetscale/database", "@prisma/client", "@tidbcloud/serverless", "@types/better-sqlite3", "@types/pg", "@types/react", "@types/sql.js", "@vercel/postgres", "@xata.io/client", "better-sqlite3", "bun-types", "expo-sqlite", "knex", "kysely", "mysql2", "pg", "postgres", "react", "sql.js", "sqlite3"] }, "sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA=="],
+
+    "hono": ["hono@4.12.27", "https://registry.npmmirror.com/hono/-/hono-4.12.27.tgz", {}, "sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q=="],
+
+    "undici-types": ["undici-types@8.3.0", "https://registry.npmmirror.com/undici-types/-/undici-types-8.3.0.tgz", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
+
+    "zod": ["zod@3.23.8", "https://registry.npmmirror.com/zod/-/zod-3.23.8.tgz", {}, "sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g=="],
+
+    "box-example/zod": ["zod@3.25.76", "https://registry.npmmirror.com/zod/-/zod-3.25.76.tgz", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
+
+    "boxfw-validator/zod": ["zod@3.25.76", "https://registry.npmmirror.com/zod/-/zod-3.25.76.tgz", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
+  }
+}

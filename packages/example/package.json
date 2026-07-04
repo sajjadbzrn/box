@@ -1,0 +1,16 @@
+{
+  "name": "box-example",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "boxfw-core": "workspace:*",
+    "boxfw-validator": "workspace:*",
+    "boxfw-adapters": "workspace:*",
+    "boxfw-db": "workspace:*",
+    "boxfw-i18n": "workspace:*",
+    "boxfw-auth": "workspace:*",
+    "boxfw-openapi": "workspace:*",
+    "zod": "^3.23.0"
+  }
+}

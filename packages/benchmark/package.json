@@ -1,0 +1,10 @@
+{
+  "name": "box-benchmark",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "boxfw-core": "workspace:*",
+    "hono": "^4"
+  }
+}

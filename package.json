@@ -1,0 +1,44 @@
+{
+  "name": "box-framework",
+  "private": true,
+  "description": "The opinionated, batteries-included backend framework for solo/indie developers — Bun-native, edge-first, with first-class Drizzle, i18n, and dual-runtime support",
+  "workspaces": [
+    "packages/core",
+    "packages/validator",
+    "packages/adapters",
+    "packages/db",
+    "packages/i18n",
+    "packages/auth",
+    "packages/openapi",
+    "packages/create-box",
+    "packages/example",
+    "packages/benchmark"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "test:core": "bun test tests/core",
+    "test:validator": "bun test tests/validator",
+    "test:adapters": "bun test tests/adapters",
+    "test:db": "bun test tests/db",
+    "test:i18n": "bun test tests/i18n",
+    "test:auth": "bun test tests/auth",
+    "test:openapi": "bun test tests/openapi",
+    "typecheck": "bun run -- tsconfig.json",
+    "example": "bun run --watch packages/example/src/index.ts",
+    "publish:core": "cd packages/core && npm publish --access public && cd ../..",
+    "publish:adapters": "cd packages/adapters && npm publish --access public && cd ../..",
+    "publish:validator": "cd packages/validator && npm publish --access public && cd ../..",
+    "publish:db": "cd packages/db && npm publish --access public && cd ../..",
+    "publish:i18n": "cd packages/i18n && npm publish --access public && cd ../..",
+    "publish:auth": "cd packages/auth && npm publish --access public && cd ../..",
+    "publish:openapi": "cd packages/openapi && npm publish --access public && cd ../..",
+    "publish:create-box": "cd packages/create-box && npm publish --access public && cd ../..",
+    "publish:all": "bun run publish:core && bun run publish:adapters && bun run publish:validator && bun run publish:db && bun run publish:i18n && bun run publish:auth && bun run publish:openapi && bun run publish:create-box"
+  },
+  "devDependencies": {
+    "zod": "3.23.8"
+  },
+  "dependencies": {
+    "bun-types": "^1.3.14"
+  }
+}

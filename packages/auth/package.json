@@ -1,0 +1,29 @@
+{
+  "name": "boxfw-auth",
+  "version": "0.1.0",
+  "description": "Box Framework — pluggable authentication with JWT (Web Crypto) and cookie-based sessions",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src/", "README.md"],
+  "author": "Box Framework Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/box-framework/box"
+  },
+  "keywords": ["bun", "auth", "jwt", "session", "authentication", "web-crypto", "typescript"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "boxfw-core": "^0.1.0"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
