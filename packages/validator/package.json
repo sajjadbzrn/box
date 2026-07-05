@@ -1,6 +1,6 @@
 {
   "name": "boxfw-validator",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Box Framework — Zod-based request validation with full TypeScript type inference",
   "type": "module",
   "main": "./src/index.ts",
@@ -9,19 +9,19 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": ["src/", "README.md"],
+  "files": ["src/", "README.md", "LICENSE"],
   "author": "Box Framework Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/box-framework/box"
+    "url": "https://github.com/sajjadbzrn/box.git"
   },
   "keywords": ["bun", "zod", "validation", "type-inference", "schema", "typescript"],
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.0",
+    "boxfw-core": "^0.1.1",
     "zod": "^3.23.0"
   },
   "devDependencies": {

@@ -1,24 +1,24 @@
 {
   "name": "create-boxfw",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Scaffold a new Box Framework project with interactive prompts",
   "type": "module",
   "bin": {
     "create-boxfw": "./src/index.ts"
   },
-  "files": ["src/", "README.md"],
+  "files": ["src/", "README.md", "LICENSE"],
   "author": "Box Framework Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/box-framework/box"
+    "url": "https://github.com/sajjadbzrn/box.git"
   },
   "keywords": ["bun", "scaffold", "create", "init", "starter", "project-generator", "typescript"],
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.0"
+    "boxfw-core": "^0.1.1"
   },
   "devDependencies": {
     "bun-types": "latest"

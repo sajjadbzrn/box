@@ -1,6 +1,6 @@
 {
   "name": "boxfw-db",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Box Framework — first-class Drizzle ORM integration, migration runner, and connection helpers",
   "type": "module",
   "main": "./src/index.ts",
@@ -9,12 +9,12 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": ["src/", "README.md"],
+  "files": ["src/", "README.md", "LICENSE"],
   "author": "Box Framework Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/box-framework/box"
+    "url": "https://github.com/sajjadbzrn/box.git"
   },
   "keywords": ["bun", "drizzle", "orm", "sqlite", "d1", "postgres", "migration", "typescript"],
   "publishConfig": {
@@ -24,7 +24,7 @@
     "drizzle-orm": "^0.36"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.0"
+    "boxfw-core": "^0.1.1"
   },
   "devDependencies": {
     "bun-types": "latest"
