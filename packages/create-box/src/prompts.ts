@@ -31,13 +31,13 @@ async function promptUser(): Promise<ProjectOptions> {
     "Runtime target (bun / workers / both):",
     "bun",
   );
-  answers.runtime = validateChoice(runtimeChoice, ["bun", "workers", "both"], "bun");
+  answers.runtime = validateChoice<ProjectOptions["runtime"]>(runtimeChoice, ["bun", "workers", "both"], "bun");
 
   const ormChoice = await ask(
     "Include ORM (drizzle / none):",
     "drizzle",
   );
-  answers.orm = validateChoice(ormChoice, ["drizzle", "none"], "drizzle");
+  answers.orm = validateChoice<NonNullable<ProjectOptions["orm"]>>(ormChoice, ["drizzle", "none"], "drizzle");
 
   const i18nChoice = await ask("Include i18n/RTL support? (yes / no):", "yes");
   answers.i18n = i18nChoice.toLowerCase() === "yes";

@@ -186,7 +186,7 @@ app.get("/users", async (c) => {
   }
 
   // Server start — conditional per runtime target
-  if ("${opts.runtime}" !== "workers") {
+  if (opts.runtime !== "workers") {
     if (opts.logger) {
       body += `
 

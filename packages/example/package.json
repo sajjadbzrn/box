@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "start": "bun run src/index.ts"
+  },
   "dependencies": {
     "boxfw-core": "workspace:*",
     "boxfw-validator": "workspace:*",
@@ -12,6 +16,7 @@
     "boxfw-auth": "workspace:*",
     "boxfw-openapi": "workspace:*",
     "boxfw-logger": "workspace:*",
+    "drizzle-orm": "^0.36",
     "zod": "^3.23.0"
   }
 }

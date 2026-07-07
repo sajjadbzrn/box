@@ -15,23 +15,30 @@ import type { MigrateConfig, DbDriver } from "./types";
  * ```
  */
 export async function migrate(config: MigrateConfig): Promise<void> {
-  const runner = getMigrator(config.driver);
-  await runner(config.db, config.migrationsFolder);
+  const { db, migrationsFolder, driver } = config;
+  await runMigration(driver, db, migrationsFolder);
 }
 
-async function getMigrator(driver: DbDriver): Promise<(db: unknown, folder: string) => Promise<void>> {
+async function runMigration(
+  driver: DbDriver,
+  db: unknown,
+  migrationsFolder: string,
+): Promise<void> {
   switch (driver) {
     case "bun-sqlite": {
       const { migrate } = await import("drizzle-orm/bun-sqlite/migrator");
-      return (db, folder) => migrate(db as Parameters<typeof migrate>[0], { migrationsFolder: folder });
+      await migrate(db as never, { migrationsFolder });
+      return;
     }
     case "d1": {
       const { migrate } = await import("drizzle-orm/d1/migrator");
-      return (db, folder) => migrate(db as Parameters<typeof migrate>[0], { migrationsFolder: folder });
+      await migrate(db as never, { migrationsFolder });
+      return;
     }
     case "pg": {
       const { migrate } = await import("drizzle-orm/node-postgres/migrator");
-      return (db, folder) => migrate(db as Parameters<typeof migrate>[0], { migrationsFolder: folder });
+      await migrate(db as never, { migrationsFolder });
+      return;
     }
   }
 }

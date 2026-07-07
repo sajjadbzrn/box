@@ -12,30 +12,39 @@ export interface SchemaParser<T> {
 /**
  * Definition of all supported validation schemas for a route.
  *
- * Each key maps to a Zod (or compatible) schema.
- * Only the schemas you provide are validated — the rest pass through as-is.
+ * Each key maps to a Zod schema. Only the schemas you provide are
+ * validated — the rest pass through as-is.
+ *
+ * Using `z.ZodTypeAny` ensures full type inference via `z.infer` in
+ * the `Validated` type, so `c.validated.body` has the exact shape
+ * of the Zod schema you passed.
+ *
+ * @example
+ * ```ts
+ * app.post("/user", v({
+ *   body: z.object({ name: z.string(), age: z.number() }),
+ * }, (c) => {
+ *   c.validated.body.name; // string
+ *   c.validated.body.age;  // number
+ * }));
+ * ```
  */
 export interface SchemaDef {
-  params?: z.ZodType;
-  query?: z.ZodType;
-  body?: z.ZodType;
-  headers?: z.ZodType;
+  params?: z.ZodTypeAny;
+  query?: z.ZodTypeAny;
+  body?: z.ZodTypeAny;
+  headers?: z.ZodTypeAny;
 }
 
 /**
- * Extract the inferred type of a schema property, or fall back to a default.
- */
-type InferProp<S, K extends keyof SchemaDef, Fallback> = S extends { [P in K]: z.ZodType<infer T> } ? T : Fallback;
-
-/**
  * `Validated` is the shape of the `c.validated` property added to the Context
- * after schema validation passes.
+ * after schema validation passes. Types are inferred from Zod schemas.
  */
 export type Validated<S extends SchemaDef> = {
-  params: InferProp<S, "params", Record<string, string>>;
-  query: InferProp<S, "query", Record<string, string>>;
-  body: InferProp<S, "body", unknown>;
-  headers: InferProp<S, "headers", Record<string, string>>;
+  params: S["params"] extends z.ZodTypeAny ? z.infer<S["params"]> : Record<string, string>;
+  query: S["query"] extends z.ZodTypeAny ? z.infer<S["query"]> : Record<string, string>;
+  body: S["body"] extends z.ZodTypeAny ? z.infer<S["body"]> : unknown;
+  headers: S["headers"] extends z.ZodTypeAny ? z.infer<S["headers"]> : Record<string, string>;
 };
 
 /**

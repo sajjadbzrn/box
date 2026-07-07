@@ -5,19 +5,25 @@
     "moduleResolution": "bundler",
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": false,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": ".",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "types": ["bun-types"]
   },
-  "include": ["packages/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [],
+  "exclude": ["node_modules", "dist", "packages/*/dist"],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/validator" },
+    { "path": "packages/adapters" },
+    { "path": "packages/db" },
+    { "path": "packages/auth" },
+    { "path": "packages/i18n" },
+    { "path": "packages/logger" },
+    { "path": "packages/openapi" },
+    { "path": "packages/create-box" }
+  ]
 }

@@ -3,13 +3,19 @@
   "version": "0.1.2",
   "description": "Box Framework — dual-runtime adapters for Bun and Cloudflare Workers",
   "type": "module",
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "files": ["src/", "README.md", "LICENSE"],
+  "files": ["dist/", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
   "author": "Box Framework Contributors",
   "license": "MIT",
   "repository": {

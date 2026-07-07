@@ -4,9 +4,12 @@
   "description": "Scaffold a new Box Framework project with interactive prompts",
   "type": "module",
   "bin": {
-    "create-boxfw": "./src/index.ts"
+    "create-boxfw": "./dist/index.js"
   },
-  "files": ["src/", "README.md", "LICENSE"],
+  "files": ["dist/", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
   "author": "Box Framework Contributors",
   "license": "MIT",
   "repository": {

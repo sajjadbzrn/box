@@ -1,0 +1,100 @@
+name: Publish (npm)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Publish All Packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint (Biome)
+        run: bun run lint
+
+      - name: Build all packages
+        run: bun run build
+
+      - name: Test
+        run: bun test
+
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Publish boxfw-core
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/core/package.json').version")
+          npm view "boxfw-core@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-core@$PKG_VERSION already published — skipping" \
+            || (cd packages/core && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-adapters
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/adapters/package.json').version")
+          npm view "boxfw-adapters@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-adapters@$PKG_VERSION already published — skipping" \
+            || (cd packages/adapters && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-validator
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/validator/package.json').version")
+          npm view "boxfw-validator@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-validator@$PKG_VERSION already published — skipping" \
+            || (cd packages/validator && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-db
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/db/package.json').version")
+          npm view "boxfw-db@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-db@$PKG_VERSION already published — skipping" \
+            || (cd packages/db && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-i18n
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/i18n/package.json').version")
+          npm view "boxfw-i18n@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-i18n@$PKG_VERSION already published — skipping" \
+            || (cd packages/i18n && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-auth
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/auth/package.json').version")
+          npm view "boxfw-auth@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-auth@$PKG_VERSION already published — skipping" \
+            || (cd packages/auth && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-openapi
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/openapi/package.json').version")
+          npm view "boxfw-openapi@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-openapi@$PKG_VERSION already published — skipping" \
+            || (cd packages/openapi && npm publish --access public && cd ../..)
+
+      - name: Publish boxfw-logger
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/logger/package.json').version")
+          npm view "boxfw-logger@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "boxfw-logger@$PKG_VERSION already published — skipping" \
+            || (cd packages/logger && npm publish --access public && cd ../..)
+
+      - name: Publish create-boxfw
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/create-box/package.json').version")
+          npm view "create-boxfw@$PKG_VERSION" version > /dev/null 2>&1 \
+            && echo "create-boxfw@$PKG_VERSION already published — skipping" \
+            || (cd packages/create-box && npm publish --access public && cd ../..)

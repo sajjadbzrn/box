@@ -25,6 +25,13 @@
     "test:auth": "bun test tests/auth",
     "test:openapi": "bun test tests/openapi",
     "typecheck": "bun run -- tsconfig.json",
+    "lint": "biome check packages/ tests/",
+    "lint:fix": "biome check --write packages/ tests/",
+    "format": "biome format packages/ tests/",
+    "format:fix": "biome format --write packages/ tests/",
+    "check": "biome check --write packages/ tests/",
+    "build": "tsc --build tsconfig.json",
+    "clean": "rm -rf packages/*/dist",
     "example": "bun run --watch packages/example/src/index.ts",
     "publish:core": "cd packages/core && npm publish --access public && cd ../..",
     "publish:adapters": "cd packages/adapters && npm publish --access public && cd ../..",
@@ -38,6 +45,7 @@
     "publish:all": "bun run publish:core && bun run publish:adapters && bun run publish:validator && bun run publish:db && bun run publish:i18n && bun run publish:auth && bun run publish:openapi && bun run publish:logger && bun run publish:create-box"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.2",
     "typescript": "^6.0.3",
     "zod": "3.23.8"
   },

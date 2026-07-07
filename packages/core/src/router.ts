@@ -118,42 +118,13 @@ export class Router {
     const commonLen = commonPrefixLength(segment, child.prefix);
 
     if (commonLen === child.prefix.length) {
-      // Child's entire prefix is a prefix of the segment
-      // Dive into child with the remaining portion of segment
-      const remaining = segment.slice(commonLen);
-      if (remaining.length > 0) {
-        // Need to adjust: split the current segment, create intermediate node
-        const existingChildren = child.children;
-        const existingHandler = child.handler;
-        const existingParamChild = child.paramChild;
-        const existingWildcardHandler = child.wildcardHandler;
-        const existingParamName = child.paramName;
-
-        // The existing child node becomes a node for the common prefix
-        child.prefix = child.prefix.slice(0, commonLen);
-
-        // Create a new child for the leftover portion of the old prefix
-        const oldPrefixSuffix = child.prefix.length === 0
-          ? "" 
-          : child.prefix;
-        
-        // Actually, let me redo this logic more carefully.
-        // We found the common prefix. The existing child has MORE in its prefix
-        // than the segment, or exactly matches. Let me restructure:
-        
-        // Reset child to represent the common prefix portion
-        child.prefix = child.prefix.slice(0, commonLen);
-        
-        // The leftover of the old prefix becomes a new child
-        const oldSuffix = child.prefix.length === 0 
-          ? "" 
-          : "";
-        // Hmm, I need to re-think this. Let me use a cleaner radix insert approach.
-        
+      // Child's entire prefix is contained in the segment.
+      if (segment.length > commonLen) {
+        // Segment extends beyond child's prefix — add remainder as a new child node
         this.insertSplit(child, segment, rest, handler, commonLen);
         return;
       }
-      // segment fully consumed by the prefix — continue with rest
+      // Segment fully consumed by the prefix — continue with remaining segments
       this.insert(child, rest, handler);
       return;
     }

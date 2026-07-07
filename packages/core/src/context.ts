@@ -6,8 +6,13 @@ import type { EnvStore } from "./types";
  *
  * It provides typed access to the incoming request, extracted route params,
  * parsed query string, and convenience response builders.
+ *
+ * The index signature allows packages like auth, db, and validator
+ * to attach properties (c.jwt, c.session, c.__db, c.validated) via
+ * `(c as unknown as Record<string, unknown>)` without type errors.
  */
 export class Context {
+  [key: string]: unknown;
   /** The raw incoming `Request` object (Web Standard, works in Bun + Workers). */
   readonly req: Request;
 

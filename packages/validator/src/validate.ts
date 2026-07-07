@@ -19,17 +19,6 @@ function extractIssues(error: unknown, prefix: string): ValidationIssue[] {
 }
 
 /**
- * Normalize Zod issues so all paths are flattened to `["type", ...originalPath]`.
- */
-function collectIssues(errors: unknown[]): ValidationIssue[] {
-  const issues: ValidationIssue[] = [];
-  for (const err of errors) {
-    issues.push(...extractIssues(err, ""));
-  }
-  return issues;
-}
-
-/**
  * Build a structured 400 JSON response for validation failures.
  */
 export function validationError(
@@ -44,21 +33,29 @@ export function validationError(
 }
 
 /**
- * Internal: run a single schema validation and, on failure, return a 400 `Response`.
- * Returns `null` on success (meaning: continue the flow).
+ * Internal result from a schema validation — either validated data or an error Response.
  */
-async function checkSchema(
+type ValidationResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; response: Response };
+
+/**
+ * Run a single schema validation and return the validated data or a 400 `Response`.
+ */
+async function checkSchema<T>(
   c: Context,
-  schema: NonNullable<unknown>,
+  // biome-ignore lint/suspicious/noExplicitAny: schema is a Zod-like object with safeParse
+  schema: any,
   data: unknown,
   label: string,
-): Promise<Response | null> {
-  const s = schema as { safeParse: (d: unknown) => { success: boolean; error?: unknown; data?: unknown } };
-  const result = s.safeParse(data);
-  if (result.success) return null;
+): Promise<ValidationResult<T>> {
+  const result = schema.safeParse(data);
+  if (result.success) {
+    return { ok: true, data: result.data as T };
+  }
 
   const issues = extractIssues(result.error, label);
-  return validationError(c, `Invalid ${label}`, issues);
+  return { ok: false, response: validationError(c, `Invalid ${label}`, issues) };
 }
 
 /**
@@ -101,9 +98,9 @@ export function v<S extends SchemaDef>(
 
     // --- Params ---
     if (schemas.params) {
-      const err = await checkSchema(c, schemas.params, c.params, "params");
-      if (err) return err;
-      validated.params = (schemas.params as { parse: (d: unknown) => unknown }).parse(c.params);
+      const result = await checkSchema(c, schemas.params, c.params, "params");
+      if (!result.ok) return result.response;
+      validated.params = result.data;
     }
 
     // --- Query ---
@@ -112,9 +109,9 @@ export function v<S extends SchemaDef>(
       c.url.searchParams.forEach((val, key) => {
         queryObj[key] = val;
       });
-      const err = await checkSchema(c, schemas.query, queryObj, "query");
-      if (err) return err;
-      validated.query = (schemas.query as { parse: (d: unknown) => unknown }).parse(queryObj);
+      const result = await checkSchema(c, schemas.query, queryObj, "query");
+      if (!result.ok) return result.response;
+      validated.query = result.data;
     }
 
     // --- Headers ---
@@ -123,9 +120,9 @@ export function v<S extends SchemaDef>(
       c.req.headers.forEach((val, key) => {
         headersObj[key] = val;
       });
-      const err = await checkSchema(c, schemas.headers, headersObj, "headers");
-      if (err) return err;
-      validated.headers = (schemas.headers as { parse: (d: unknown) => unknown }).parse(headersObj);
+      const result = await checkSchema(c, schemas.headers, headersObj, "headers");
+      if (!result.ok) return result.response;
+      validated.headers = result.data;
     }
 
     // --- Body ---
@@ -136,13 +133,13 @@ export function v<S extends SchemaDef>(
       } catch {
         bodyObj = null;
       }
-      const err = await checkSchema(c, schemas.body, bodyObj, "body");
-      if (err) return err;
-      validated.body = (schemas.body as { parse: (d: unknown) => unknown }).parse(bodyObj);
+      const result = await checkSchema(c, schemas.body, bodyObj, "body");
+      if (!result.ok) return result.response;
+      validated.body = result.data;
     }
 
     // Inject validated data into context
-    (c as Record<string, unknown>).validated = validated;
+    (c as unknown as Record<string, unknown>).validated = validated;
 
     // Call handler with typed context
     const result = await handler(c as ValidatedContext<S>);

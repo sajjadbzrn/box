@@ -1,5 +1,6 @@
 import type { Context } from "./context";
-import type { Handler, HttpMethod, Middleware, MatchResult, EnvStore } from "./types";
+import type { Handler, HttpMethod, Middleware, MatchResult, EnvStore, WebSocketHandler } from "./types";
+import type { ServerWebSocket } from "bun";
 import { Router } from "./router";
 import { Context as Ctx } from "./context";
 import { compose } from "./middleware";
@@ -42,65 +43,41 @@ export class App {
 
   // ---- Route registration ----
 
-  /**
-   * Register a handler for `GET` requests at `path`.
-   */
   get(path: string, handler: Handler): this {
     this.router.add("GET", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `POST` requests at `path`.
-   */
   post(path: string, handler: Handler): this {
     this.router.add("POST", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `PUT` requests at `path`.
-   */
   put(path: string, handler: Handler): this {
     this.router.add("PUT", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `DELETE` requests at `path`.
-   */
   delete(path: string, handler: Handler): this {
     this.router.add("DELETE", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `PATCH` requests at `path`.
-   */
   patch(path: string, handler: Handler): this {
     this.router.add("PATCH", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `HEAD` requests at `path`.
-   */
   head(path: string, handler: Handler): this {
     this.router.add("HEAD", path, handler);
     return this;
   }
 
-  /**
-   * Register a handler for `OPTIONS` requests at `path`.
-   */
   options(path: string, handler: Handler): this {
     this.router.add("OPTIONS", path, handler);
     return this;
   }
 
-  /**
-   * Register a generic route by method.
-   */
   route(method: HttpMethod, path: string, handler: Handler): this {
     this.router.add(method, path, handler);
     return this;
@@ -108,27 +85,8 @@ export class App {
 
   // ---- WebSockets (Bun-native) ----
 
-  /**
-   * WebSocket handler config per route.
-   */
   private _wsRoutes: Map<string, WebSocketHandler> = new Map();
 
-  /**
-   * Register a WebSocket route.
-   *
-   * On Bun, this uses the native `Bun.serve()` WebSocket support.
-   * On Cloudflare Workers, WebSockets use `WebSocketPair` — this method
-   * documents the fallback pattern but does not provide an adapter in core.
-   *
-   * @example
-   * ```ts
-   * app.ws("/chat", {
-   *   open: (ws) => console.log("Connected"),
-   *   message: (ws, msg) => ws.send(`Echo: ${msg}`),
-   *   close: (ws) => console.log("Disconnected"),
-   * });
-   * ```
-   */
   ws(
     path: string,
     handlers: WebSocketHandler,
@@ -139,28 +97,16 @@ export class App {
 
   // ---- Middleware ----
 
-  /**
-   * Register a global middleware.
-   *
-   * Middleware is executed in the order registered, wrapping
-   * every route handler (onion model).
-   */
   use(middleware: Middleware): this {
     this._middlewares.push(middleware);
     return this;
   }
 
-  /**
-   * Override the default 404 handler.
-   */
   notFound(handler: Handler): this {
     this._notFoundHandler = handler;
     return this;
   }
 
-  /**
-   * Override the default error handler.
-   */
   onError(handler: (error: Error, c: Context) => Response): this {
     this._errorHandler = handler;
     return this;
@@ -168,15 +114,6 @@ export class App {
 
   // ---- Environment ----
 
-  /**
-   * Set the runtime `EnvStore` for this app.
-   *
-   * On Bun, `box-adapters` provides `bunEnv()`.
-   * On Cloudflare Workers, use `workerEnv(env)`.
-   *
-   * The env store is injected into every `Context` before
-   * the handler runs, making `c.env()` work identically on both runtimes.
-   */
   setEnv(store: EnvStore): this {
     this._envStore = store;
     return this;
@@ -184,25 +121,6 @@ export class App {
 
   // ---- Request processing ----
 
-  /**
-   * The core `fetch` handler.
-   *
-   * Compatible with both `Bun.serve()` (which passes only a `Request`)
-   * and Cloudflare Workers (pass an optional `EnvStore`).
-   *
-   * @example
-   * ```ts
-   * // Bun — env comes from the app-level default
-   * app.fetch(request);
-   *
-   * // Cloudflare Worker — env comes from the fetch handler argument
-   * export default {
-   *   fetch(req, env) {
-   *     return app.fetch(req, workerEnv(env));
-   *   }
-   * };
-   * ```
-   */
   fetch: (request: Request, env?: EnvStore) => Promise<Response> = async (
     request: Request,
     env?: EnvStore,
@@ -236,16 +154,6 @@ export class App {
 
   // ---- Server start ----
 
-  /**
-   * Start the server using `Bun.serve()`.
-   *
-   * Automatically sets up `bunEnv()` if no env store has been
-   * explicitly configured.
-   *
-   * All options from `Bun.serve` are supported (port, hostname, TLS, etc.).
-   *
-   * @returns The `Server` instance from `Bun.serve()`.
-   */
   listen(options: {
     port?: number;
     hostname?: string;
@@ -257,53 +165,69 @@ export class App {
     const wsRoutes = this._wsRoutes;
     const hasWs = wsRoutes.size > 0;
 
-    const serverConfig: Parameters<typeof Bun.serve>[0] = {
-      port: options.port ?? 3000,
-      hostname: options.hostname,
-      development: options.development,
-      tls: options.tls,
-      maxRequestBodySize: options.maxRequestBodySize,
-      fetch(req, server) {
-        const url = new URL(req.url);
-
-        // Check for WebSocket upgrade
-        if (hasWs && wsRoutes.has(url.pathname)) {
-          const upgraded = server.upgrade(req, {
-            data: url.pathname,
-          });
-          if (upgraded) return;
-        }
-
-        return app.fetch(req);
-      },
-    };
-
-    if (hasWs) {
-      serverConfig.websocket = {
-        open(ws: WebSocket) {
-          const path = (ws as unknown as { data?: string }).data ?? "";
-          const handler = wsRoutes.get(path);
-          handler?.open?.(ws);
-        },
-        message(ws: WebSocket, data: string | ArrayBuffer) {
-          const path = (ws as unknown as { data?: string }).data ?? "";
-          const handler = wsRoutes.get(path);
-          handler?.message?.(ws, data);
-        },
-        close(ws: WebSocket, code: number, reason: string) {
-          const path = (ws as unknown as { data?: string }).data ?? "";
-          const handler = wsRoutes.get(path);
-          handler?.close?.(ws, code, reason);
-        },
-        drain(ws: WebSocket) {
-          const path = (ws as unknown as { data?: string }).data ?? "";
-          const handler = wsRoutes.get(path);
-          handler?.drain?.(ws);
-        },
-      };
-    }
-
     const app = this;
-    return Bun.serve(serverConfig);
+
+    // Build websocket config for Bun.serve
+    const wsConfig = hasWs
+      ? {
+          open(ws: ServerWebSocket<unknown>) {
+            const path = (ws.data as string | undefined) ?? "";
+            const handler = wsRoutes.get(path);
+            handler?.open?.(ws as unknown as WebSocket);
+          },
+          message(ws: ServerWebSocket<unknown>, data: string | BufferSource) {
+            const path = (ws.data as string | undefined) ?? "";
+            const handler = wsRoutes.get(path);
+            handler?.message?.(ws as unknown as WebSocket, data as string | ArrayBuffer);
+          },
+          close(ws: ServerWebSocket<unknown>, code: number, reason: string) {
+            const path = (ws.data as string | undefined) ?? "";
+            const handler = wsRoutes.get(path);
+            handler?.close?.(ws as unknown as WebSocket, code, reason);
+          },
+          drain(ws: ServerWebSocket<unknown>) {
+            const path = (ws.data as string | undefined) ?? "";
+            const handler = wsRoutes.get(path);
+            handler?.drain?.(ws as unknown as WebSocket);
+          },
+        }
+      : undefined;
+
+    const server = hasWs
+      ? Bun.serve({
+          port: options.port ?? 3000,
+          hostname: options.hostname,
+          development: options.development,
+          tls: options.tls,
+          maxRequestBodySize: options.maxRequestBodySize,
+          fetch(req, server) {
+            const url = new URL(req.url);
+            if (wsRoutes.has(url.pathname)) {
+              const upgraded = server.upgrade(req, { data: url.pathname });
+              if (upgraded) return;
+            }
+            return app.fetch(req);
+          },
+          websocket: wsConfig!,
+        })
+      : Bun.serve({
+          port: options.port ?? 3000,
+          hostname: options.hostname,
+          development: options.development,
+          tls: options.tls,
+          maxRequestBodySize: options.maxRequestBodySize,
+          fetch(req) {
+            return app.fetch(req);
+          },
+        });
+
+    // Graceful shutdown on SIGTERM/SIGINT (Ctrl+C)
+    const shutdown = () => {
+      server.stop();
+    };
+    process.on("SIGTERM", shutdown);
+    process.on("SIGINT", shutdown);
+
+    return server;
   }
 }

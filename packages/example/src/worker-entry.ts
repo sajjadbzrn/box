@@ -1,52 +1,35 @@
 /**
- * Cloudflare Worker entry point.
+ * ═══════════════════════════════════════════════════════════════════════════
+ *  CLOUDFLARE WORKER ENTRY POINT
+ * ═══════════════════════════════════════════════════════════════════════════
  *
- * This demonstrates that the SAME app code works as a Worker.
- * The route definitions, middleware, and `c.env()` access are
- * identical to the Bun version — only the entry wrapper differs.
+ * This file demonstrates that the **exact same app code** works on
+ * Cloudflare Workers. The only difference is:
  *
- * Usage: conceptually deployable to Cloudflare Workers with:
- *   wrangler dev --local
+ *   1. Environment variables come from the `env` parameter instead of
+ *      `process.env` — the `workerEnv()` adapter handles this.
+ *   2. WebSocket and SQLite are not available on Workers (use D1 + WebSocketPair).
+ *   3. The entry point exports a Worker `fetch` handler instead of calling
+ *      `app.listen()`.
+ *
+ * Everything else — routes, middleware, validation, auth, i18n — is
+ * **completely identical** to the Bun version.
+ *
+ * @see https://developers.cloudflare.com/workers/
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 
-import { Box } from "boxfw-core";
 import { workerEnv } from "boxfw-adapters";
+import { app } from "./index";
 
-const app = new Box();
-
-// ---- Routes (identical to Bun example!) ----
-app.use(async (c, next) => {
-  const start = Date.now();
-  console.log(`→ ${c.method} ${c.path}`);
-  const res = await next();
-  console.log(`← ${c.method} ${c.path} — ${res.status} (${Date.now() - start}ms)`);
-  return res;
-});
-
-app.get("/", (c) => {
-  const nodeEnv = c.env("NODE_ENV") ?? "development";
-  return c.json({
-    runtime: "Cloudflare Worker",
-    env: nodeEnv,
-    message: "Box runs everywhere",
-  });
-});
-
-app.get("/config", (c) => {
-  return c.json({
-    database: c.env("DATABASE_URL") ?? "not set",
-    dbBinding: c.env("DB") ? "present" : "absent",
-    debug: c.env("DEBUG") ?? "false",
-  });
-});
-
-/**
- * Worker fetch handler.
- *
- * This is the ONLY runtime-specific code.
- * Everything else (routes, middleware, context) is identical.
- */
 export default {
+  /**
+   * Workers `fetch` handler — replaces `app.listen()` from the Bun version.
+   *
+   * The `env` parameter contains bindings (D1, KV, R2, etc.) and
+   * environment variables. The `workerEnv()` adapter wraps these into
+   * the same `EnvStore` interface that `c.env()` uses in route handlers.
+   */
   async fetch(request: Request, env: Record<string, unknown>) {
     app.setEnv(workerEnv(env));
     return app.fetch(request);

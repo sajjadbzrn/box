@@ -16,9 +16,10 @@ import type { EnvStore } from "boxfw-core";
 export function bunEnv(): EnvStore {
   return {
     get(key: string): unknown {
-      return (globalThis as Record<string, unknown>)["Bun"] !== undefined
-        ? (Bun as Record<string, unknown>).env?.[key]
-        : process.env[key];
+      if (typeof (globalThis as Record<string, unknown>)["Bun"] !== "undefined") {
+        return (Bun.env as Record<string, string | undefined>)[key];
+      }
+      return (process.env as Record<string, string | undefined>)[key];
     },
   };
 }
