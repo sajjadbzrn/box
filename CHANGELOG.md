@@ -7,6 +7,25 @@ All notable changes to the **Box Framework** are documented here.
 
 ---
 
+## [0.2.1] — 2026-07
+
+### Added
+
+- **CHANGELOG.md** — version history and upgrade guide index for the entire framework.
+- **Upgrade guide** (`docs/en/guides/upgrade.md`) — migration steps between versions.
+- **GitHub Release workflow** — `publish.yml` now auto-creates a GitHub Release
+  with notes extracted from `CHANGELOG.md` on every `v*` tag push.
+
+### Changed
+
+- **`create-boxfw` scaffold** now generates correct `^0.2.1` versions for all boxfw
+  packages (was `^0.1.0`). Includes a `boxfw:update` script in generated projects
+  to keep packages always at the latest version.
+- **Documentation index** (`docs/en/index.md`) — added "Upgrade Guide" link to the
+  Guides table.
+
+---
+
 ## [0.2.0] — 2026-07
 
 ### Added
@@ -91,7 +110,7 @@ app.listen({ port: 3000 });
 
 | From | To | Guide |
 |------|----|-------|
-| 0.1.0 | 0.2.0 | [docs/en/guides/upgrade.md](docs/en/guides/upgrade.md#-010--020) |
+| 0.1.0 | 0.2.0 | [docs/en/guides/upgrade.md](docs/en/guides/upgrade.md#010--020) |
 
 ---
 

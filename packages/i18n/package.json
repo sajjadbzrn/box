@@ -1,6 +1,6 @@
 {
   "name": "boxfw-i18n",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Box Framework — built-in i18n/RTL support with locale detection and bilingual error messages",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.2.0"
+    "boxfw-core": "^0.2.1"
   },
   "devDependencies": {
     "bun-types": "latest"

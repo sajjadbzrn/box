@@ -1,6 +1,6 @@
 {
   "name": "boxfw-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Box Framework — radix-tree router, typed Context, onion middleware, WebSocket support",
   "type": "module",
   "main": "./dist/index.js",

@@ -69,18 +69,18 @@ export { D };`,
 
 function genPackageJson(opts: ProjectOptions): string {
   const deps: Record<string, string> = {
-    "boxfw-core": "^0.2.0",
+    "boxfw-core": "^0.2.1",
   };
   if (opts.orm === "drizzle") {
-    deps["boxfw-db"] = "^0.2.0";
+    deps["boxfw-db"] = "^0.2.1";
     deps["drizzle-orm"] = "^0.36";
   }
-  if (opts.i18n) deps["boxfw-i18n"] = "^0.2.0";
-  if (opts.auth) deps["boxfw-auth"] = "^0.2.0";
-  if (opts.logger) deps["boxfw-logger"] = "^0.2.0";
+  if (opts.i18n) deps["boxfw-i18n"] = "^0.2.1";
+  if (opts.auth) deps["boxfw-auth"] = "^0.2.1";
+  if (opts.logger) deps["boxfw-logger"] = "^0.2.1";
 
   if (opts.runtime === "workers" || opts.runtime === "both") {
-    deps["boxfw-adapters"] = "^0.2.0";
+    deps["boxfw-adapters"] = "^0.2.1";
   }
 
   const scripts: Record<string, string> = {
