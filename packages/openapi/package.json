@@ -1,6 +1,6 @@
 {
   "name": "boxfw-openapi",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Box Framework — OpenAPI 3.0 spec generator from route definitions",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.1"
+    "boxfw-core": "^0.2.0"
   },
   "devDependencies": {
     "bun-types": "latest"

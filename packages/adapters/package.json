@@ -1,6 +1,6 @@
 {
   "name": "boxfw-adapters",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Box Framework — dual-runtime adapters for Bun and Cloudflare Workers",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.1"
+    "boxfw-core": "^0.2.0"
   },
   "devDependencies": {
     "bun-types": "latest"

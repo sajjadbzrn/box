@@ -1,6 +1,6 @@
 {
   "name": "boxfw-db",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Box Framework — first-class Drizzle ORM integration, migration runner, and connection helpers",
   "type": "module",
   "main": "./dist/index.js",
@@ -30,7 +30,7 @@
     "drizzle-orm": "^0.36"
   },
   "dependencies": {
-    "boxfw-core": "^0.1.1"
+    "boxfw-core": "^0.2.0"
   },
   "devDependencies": {
     "bun-types": "latest"
