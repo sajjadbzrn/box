@@ -98,3 +98,48 @@ jobs:
           npm view "create-boxfw@$PKG_VERSION" version > /dev/null 2>&1 \
             && echo "create-boxfw@$PKG_VERSION already published — skipping" \
             || (cd packages/create-box && npm publish --access public && cd ../..)
+
+      - name: Extract changelog for release
+        id: extract-changelog
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Extract the CHANGELOG section for this version
+          awk -v ver="[$VERSION]" '
+            /^## / {
+              if (found) exit
+              if (index($0, ver) > 0) {
+                found = 1
+                print
+                next
+              }
+            }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+
+          # Strip trailing --- separator and blank lines
+          sed -i '$ { /^---$/d }' release-notes.md
+          sed -i ':a; /^[[:space:]]*$/ { $d; N; ba }' release-notes.md
+
+          # Fallback if no matching CHANGELOG entry was found
+          if [ ! -s release-notes.md ]; then
+            printf "%%s\n" \
+              "# Release v$VERSION" \
+              "" \
+              "See the [CHANGELOG](CHANGELOG.md) for details." \
+              > release-notes.md
+            echo "No CHANGELOG entry found for v$VERSION — using fallback"
+          else
+            echo "Extracted release notes for v$VERSION"
+            head -5 release-notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          body_path: release-notes.md
+          name: v${{ steps.extract-changelog.outputs.version }}
+          make_latest: true

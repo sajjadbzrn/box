@@ -69,18 +69,18 @@ export { D };`,
 
 function genPackageJson(opts: ProjectOptions): string {
   const deps: Record<string, string> = {
-    "boxfw-core": "^0.1.0",
+    "boxfw-core": "^0.2.0",
   };
   if (opts.orm === "drizzle") {
-    deps["boxfw-db"] = "^0.1.0";
+    deps["boxfw-db"] = "^0.2.0";
     deps["drizzle-orm"] = "^0.36";
   }
-  if (opts.i18n) deps["boxfw-i18n"] = "^0.1.0";
-  if (opts.auth) deps["boxfw-auth"] = "^0.1.0";
-  if (opts.logger) deps["boxfw-logger"] = "^0.1.0";
+  if (opts.i18n) deps["boxfw-i18n"] = "^0.2.0";
+  if (opts.auth) deps["boxfw-auth"] = "^0.2.0";
+  if (opts.logger) deps["boxfw-logger"] = "^0.2.0";
 
   if (opts.runtime === "workers" || opts.runtime === "both") {
-    deps["boxfw-adapters"] = "^0.1.0";
+    deps["boxfw-adapters"] = "^0.2.0";
   }
 
   const scripts: Record<string, string> = {
@@ -91,6 +91,10 @@ function genPackageJson(opts: ProjectOptions): string {
     scripts["db:generate"] = "drizzle-kit generate";
     scripts["db:migrate"] = "bun run src/migrate.ts";
   }
+
+  // Keep boxfw packages always at the latest version
+  scripts["boxfw:update"] =
+    "bunx npm-check-updates --target latest --filter /^boxfw-/ -u && bun install";
 
   return JSON.stringify(
     {

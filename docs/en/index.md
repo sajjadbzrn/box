@@ -43,6 +43,7 @@ Box is a TypeScript-first web framework built for **Bun** and **Cloudflare Worke
 |-----|-------------|
 | [WebSocket](guides/websocket.md) | Real-time communication with WebSockets |
 | [Error Handling](guides/error-handling.md) | Custom error handlers and validation errors |
+| [Upgrade Guide](guides/upgrade.md) | Breaking changes and migration steps between versions |
 | [Testing](guides/testing.md) | Testing Box apps with Bun test |
 | [Deployment](guides/deployment.md) | Deploy to Bun or Cloudflare Workers |
 
