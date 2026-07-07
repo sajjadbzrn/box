@@ -1,17 +1,18 @@
 #!/usr/bin/env bun
-/**
- * `create-box` — scaffolding CLI for Box projects.
- *
- * Usage:
- *   bunx create-box
- *
- * Interactive prompts collect project preferences, then
- * scaffold a fully working project in one command.
- */
+import { main, parseCliArgs } from "./prompts";
 
-import { main } from "./prompts";
+const cliArgs = parseCliArgs(process.argv.slice(2));
 
-main().catch((err) => {
-  console.error("Error:", err.message);
+main(cliArgs).catch((err) => {
+  process.stderr.write(`\nError: ${err.message}\n`);
+  if (process.env.DEBUG) {
+    process.stderr.write(err.stack + "\n");
+  }
   process.exit(1);
+});
+
+// Graceful exit on Ctrl+C
+process.on("SIGINT", () => {
+  process.stdout.write("\n");
+  process.exit(0);
 });

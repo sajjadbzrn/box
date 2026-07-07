@@ -6,7 +6,7 @@
   "bin": {
     "create-boxfw": "./dist/index.js"
   },
-  "files": ["dist/", "README.md", "LICENSE"],
+  "files": ["dist/", "templates/", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsc --project tsconfig.json"
   },

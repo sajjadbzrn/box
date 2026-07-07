@@ -1,0 +1,122 @@
+import { Box, cors } from "boxfw-core";
+{{#if hasLogger}}
+import { createLogger, requestLogger } from "boxfw-logger";
+{{/if}}
+{{#if hasI18n}}
+import { localeDetect, t, rtlMeta } from "boxfw-i18n";
+{{/if}}
+{{#if hasValidator}}
+import { v, z } from "boxfw-validator";
+{{/if}}
+{{#if hasOpenapi}}
+import { openapi } from "boxfw-openapi";
+{{/if}}
+{{#if hasDrizzle}}
+import { D, typedDb } from "./db";
+import { db } from "./db";
+import * as schema from "../drizzle/schema";
+{{/if}}
+{{#if hasAuth}}
+import { jwt } from "boxfw-auth";
+{{/if}}
+
+const app = new Box();
+
+{{#if hasLogger}}
+const log = createLogger({ level: "debug", name: "{{projectName}}" });
+app.use(requestLogger({ logger: log }));
+{{/if}}
+
+app.use(cors({ origin: "*" }));
+
+{{#if hasI18n}}
+app.use(localeDetect({
+  default: "en",
+  supported: ["en", "fa"],
+}));
+{{/if}}
+
+{{#if hasDrizzle}}
+app.use(D(db));
+{{/if}}
+
+{{#if hasAuth}}
+app.use(jwt({
+  secret: process.env.JWT_SECRET || "dev-secret-change-me",
+  optional: true,
+}));
+{{/if}}
+
+{{#if hasOpenapi}}
+openapi(app, {
+  info: {
+    title: "{{projectName}}",
+    version: "0.0.0",
+    description: "{{projectName}} API",
+  },
+  path: "/openapi.json",
+});
+{{/if}}
+
+app.notFound((c) => {
+  return c.json({ error: "Not Found" }, 404);
+});
+
+app.onError((c, err) => {
+  {{#if hasLogger}}
+  log.error("Unhandled error", { error: err.message });
+  {{/if}}
+  console.error(err);
+  return c.json({ error: "Internal Server Error" }, 500);
+});
+
+// Routes
+app.get("/", (c) => {
+  return c.json({
+    message: "Hello, Box!",
+    project: "{{projectName}}",
+    runtime: "{{runtime}}",
+    {{#if hasI18n}}
+    locale: c.locale,
+    dir: rtlMeta(c.locale).dir,
+    {{/if}}
+  });
+});
+
+{{#if hasValidator}}
+// Zod validation example
+const helloQuery = z.object({
+  name: z.string().optional().default("World"),
+});
+
+app.get("/hello", v({ query: helloQuery }, (c) => {
+  return c.json({ message: `Hello, ${c.validated.query.name}!` });
+}));
+{{/if}}
+
+{{#if hasDrizzle}}
+// Drizzle CRUD example
+app.get("/users", async (c) => {
+  const users = await typedDb(c).select().from(schema.users);
+  return c.json(users);
+});
+{{/if}}
+
+{{#if hasAuth}}
+import { loginRoutes } from "./auth/login";
+import { registerRoutes } from "./auth/register";
+import { meRoutes } from "./auth/me";
+app.use(registerRoutes);
+app.use(loginRoutes);
+app.use(meRoutes);
+{{/if}}
+
+{{#if isBunRuntime}}
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+app.listen({ port });
+{{#if hasLogger}}
+log.info(`Server running at http://localhost:${port}`);
+{{else}}
+console.log(`Server running at http://localhost:${port}`);
+{{/if}}
+{{/if}}

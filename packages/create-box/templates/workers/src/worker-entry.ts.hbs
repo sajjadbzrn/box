@@ -1,0 +1,11 @@
+import { Box } from "boxfw-core";
+import { workerEnv } from "boxfw-adapters";
+
+import { app } from "./index";
+
+export default {
+  async fetch(request: Request, env: Record<string, unknown>) {
+    app.setEnv(workerEnv(env));
+    return app.fetch(request);
+  },
+};

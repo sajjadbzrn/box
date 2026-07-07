@@ -1,0 +1,13 @@
+import { migrate } from "boxfw-db";
+import { Database } from "bun:sqlite";
+
+const sqlite = new Database("app.db");
+
+await migrate({
+  driver: sqlite,
+  db: { dialect: "sqlite" },
+  folder: "./drizzle/migrations",
+});
+
+console.log("Migration complete.");
+sqlite.close();

@@ -1,0 +1,10 @@
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { Database } from "bun:sqlite";
+import { D, createDbCtx } from "boxfw-db";
+import * as schema from "../drizzle/schema";
+
+const sqlite = new Database("app.db");
+export const db = drizzle(sqlite, { schema });
+export const typedDb = createDbCtx<typeof db>();
+
+export { D };
