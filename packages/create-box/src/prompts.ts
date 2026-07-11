@@ -289,14 +289,22 @@ function printSummary(opts: ProjectOptions): void {
   const labelWidth = Math.max(...rows.map(([label]) => label.length));
   const lineWidth = 48;
 
+  /** Strip ANSI escape codes to get visible string length. */
+  const visLen = (s: string): number => s.replace(/\x1b\[[0-9;]*m/g, "").length;
+
   // Build the box manually
   let summary = `\n  ${p("┌" + "─".repeat(lineWidth) + "┐")}\n`;
-  summary += `  ${p("│")}  ${c.bold("Project Summary")}${h(" ─".repeat(Math.max(0, Math.floor((lineWidth - 20) / 2))))}  ${p("│")}\n`;
+  const title = "Project Summary";
+  const titlePad = lineWidth - title.length - 2;
+  summary += `  ${p("│")}  ${c.bold(title)}${h(" \u2500".repeat(Math.max(0, Math.floor(titlePad / 2))))}${" ".repeat(titlePad % 2)}${p("│")}\n`;
   summary += `  ${p("├" + "─".repeat(lineWidth) + "┤")}\n`;
 
   for (const [label, value] of rows) {
     const paddedLabel = label.padEnd(labelWidth);
-    summary += `  ${p("│")}  ${h(paddedLabel)}  ${value}${p("│").padStart(lineWidth - labelWidth - paddedLabel.length + 6)}\n`;
+    const valueVisLen = visLen(value);
+    const innerContentLen = 2 + labelWidth + 2 + valueVisLen; // 2 leading spaces + label + 2 spaces + value
+    const rightPad = Math.max(0, lineWidth - innerContentLen);
+    summary += `  ${p("│")}  ${h(paddedLabel)}  ${value}${" ".repeat(rightPad)}${p("│")}\n`;
   }
 
   summary += `  ${p("└" + "─".repeat(lineWidth) + "┘")}`;

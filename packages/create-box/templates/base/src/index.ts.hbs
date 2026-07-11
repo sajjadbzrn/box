@@ -6,7 +6,8 @@ import { createLogger, requestLogger } from "boxfw-logger";
 import { localeDetect, rtlMeta } from "boxfw-i18n";
 {{/if}}
 {{#if hasValidator}}
-import { v, z } from "boxfw-validator";
+import { v } from "boxfw-validator";
+import { z } from "zod";
 {{/if}}
 {{#if hasOpenapi}}
 import { openapi, type RouteSpec } from "boxfw-openapi";
