@@ -89,10 +89,7 @@ export function session(options: SessionOptions = {}): Middleware {
 
         const res = await next();
         // Set session cookie on response
-        res.headers.set(
-          "set-cookie",
-          `${cookieName}=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ttl}`,
-        );
+        res.headers.set("set-cookie", `${cookieName}=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ttl}`);
         return res;
       }
     }
@@ -115,10 +112,7 @@ export function session(options: SessionOptions = {}): Middleware {
     const updatedData = (c as Record<string, unknown>).session as Record<string, unknown>;
     await store.set(newSid, updatedData, ttl);
 
-    res.headers.set(
-      "set-cookie",
-      `${cookieName}=${newSid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ttl}`,
-    );
+    res.headers.set("set-cookie", `${cookieName}=${newSid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ttl}`);
     return res;
   };
 }

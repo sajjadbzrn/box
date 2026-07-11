@@ -1,5 +1,5 @@
-import { describe, it, expect } from "bun:test";
-import { session, memoryStore } from "../../packages/auth/src/session";
+import { describe, expect, it } from "bun:test";
+import { memoryStore, session } from "../../packages/auth/src/session";
 
 describe("session middleware", () => {
   it("creates a new session when no cookie is present", async () => {

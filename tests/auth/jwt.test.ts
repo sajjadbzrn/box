@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { jwt, signJwt } from "../../packages/auth/src/index";
 
 describe("jwt middleware", () => {

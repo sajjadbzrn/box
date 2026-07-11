@@ -8,8 +8,8 @@
  * If this file compiles, the type inference is working.
  */
 
-import { v, type ValidatedContext, type Validated } from "../../packages/validator/src/index";
 import { z } from "zod";
+import { type Validated, type ValidatedContext, v } from "../../packages/validator/src/index";
 
 // -------- Params inference --------
 const paramsSchema = { params: z.object({ id: z.string(), count: z.coerce.number() }) };
@@ -73,4 +73,4 @@ const noSchemaHandler = v(noSchemas, (c) => {
 });
 
 // Export to prevent dead-code elimination
-export { paramsHandler, bodyHandler, queryHandler, noSchemaHandler };
+export { bodyHandler, noSchemaHandler, paramsHandler, queryHandler };

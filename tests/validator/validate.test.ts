@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { z } from "zod";
 import { v } from "../../packages/validator/src/validate";
 
@@ -6,10 +6,7 @@ function makeRequest(path: string, init?: RequestInit): Request {
   return new Request(`http://localhost:3000${path}`, init);
 }
 
-async function runHandler(
-  handler: ReturnType<typeof v>,
-  req: Request,
-) {
+async function runHandler(handler: ReturnType<typeof v>, req: Request) {
   // We need a minimal Context-like object. The handler only uses c.json(), c.params, etc.
   // But v() expects a full Context. Let's create a real Context.
   const { Context } = await import("../../packages/core/src/context");
@@ -40,7 +37,7 @@ describe("v() — params validation", () => {
     const { Context: Ctx } = await import("../../packages/core/src/context");
     const ctx = new Ctx(req, { id: "42" });
     const res = await handler(ctx as any);
-    
+
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toEqual({ id: "42" });
@@ -211,14 +208,11 @@ describe("v() — combined schemas", () => {
       });
     });
 
-    const req = makeRequest(
-      "/user/550e8400-e29b-41d4-a716-446655440000?format=json",
-      {
-        method: "POST",
-        body: JSON.stringify({ action: "activate" }),
-        headers: { "content-type": "application/json" },
-      },
-    );
+    const req = makeRequest("/user/550e8400-e29b-41d4-a716-446655440000?format=json", {
+      method: "POST",
+      body: JSON.stringify({ action: "activate" }),
+      headers: { "content-type": "application/json" },
+    });
     const { Context: Ctx } = await import("../../packages/core/src/context");
     const ctx = new Ctx(req, { userId: "550e8400-e29b-41d4-a716-446655440000" });
     const res = await handler(ctx as any);

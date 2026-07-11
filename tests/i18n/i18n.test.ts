@@ -1,6 +1,6 @@
-import { describe, it, expect } from "bun:test";
-import { localeDetect, t, bilingualError, rtlMeta, isRtl, RTL_LANGUAGES } from "../../packages/i18n/src/index";
+import { describe, expect, it } from "bun:test";
 import { Context } from "../../packages/core/src/context";
+import { bilingualError, isRtl, localeDetect, RTL_LANGUAGES, rtlMeta, t } from "../../packages/i18n/src/index";
 
 const dict = {
   en: { hello: "Hello", not_found: "Not Found", error: "Error" },

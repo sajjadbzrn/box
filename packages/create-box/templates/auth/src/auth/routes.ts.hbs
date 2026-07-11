@@ -1,8 +1,8 @@
-import type { Box } from "boxfw-core";
 import { v, z } from "boxfw-validator";
 import { signJwt } from "boxfw-auth";
+import type { Box as App } from "boxfw-core";
 
-export function registerAuthRoutes(app: Box) {
+export function registerAuthRoutes(app: App) {
   const loginBody = z.object({
     email: z.string().email(),
     password: z.string().min(8),
@@ -11,16 +11,18 @@ export function registerAuthRoutes(app: Box) {
   app.post("/api/auth/login", v({ body: loginBody }, async (c) => {
     const { email } = c.validated.body;
 
-    const token = await signJwt({
-      payload: { sub: "1", email },
-      secret: process.env.JWT_SECRET || "dev-secret-change-me",
-    });
+    const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+    const token = await signJwt(
+      { sub: "1", email },
+      JWT_SECRET,
+      86400, // 24 hours
+    );
 
     return c.json({ token }, 200);
   }));
 
   app.get("/api/auth/me", async (c) => {
-    const user = c.get("user");
-    return c.json({ user }, 200);
+    const jwtPayload = (c as unknown as Record<string, unknown>).jwt as Record<string, unknown> | null;
+    return c.json({ user: jwtPayload }, 200);
   });
 }

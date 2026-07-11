@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { bunEnv, workerEnv } from "../../packages/adapters/src/index";
 import type { EnvStore } from "../../packages/core/src/types";
 

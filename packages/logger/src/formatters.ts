@@ -90,9 +90,7 @@ function formatPretty(entry: LogEntry, useColors: boolean): string {
   // Duration
   let durationPart = "";
   if (entry.duration !== undefined) {
-    const dur = entry.duration >= 1000
-      ? `${(entry.duration / 1000).toFixed(2)}s`
-      : `${entry.duration}ms`;
+    const dur = entry.duration >= 1000 ? `${(entry.duration / 1000).toFixed(2)}s` : `${entry.duration}ms`;
     durationPart = useColors ? colors.dim(dur) : dur;
   }
 
@@ -108,9 +106,7 @@ function formatPretty(entry: LogEntry, useColors: boolean): string {
   let errorPart = "";
   if (entry.error) {
     const errMsg = entry.error.stack ?? entry.error.message;
-    errorPart = useColors
-      ? `\n  ${colors.red(errMsg)}`
-      : `\n  ${errMsg}`;
+    errorPart = useColors ? `\n  ${colors.red(errMsg)}` : `\n  ${errMsg}`;
   }
 
   // Meta (JSON inline)
@@ -121,13 +117,7 @@ function formatPretty(entry: LogEntry, useColors: boolean): string {
   }
 
   // Assemble parts
-  const parts = [
-    useColors ? colors.dim(ts) : ts,
-    levelTag,
-    nameTag,
-    arrow,
-    message,
-  ];
+  const parts = [useColors ? colors.dim(ts) : ts, levelTag, nameTag, arrow, message];
 
   if (reqPart) parts.push(reqPart);
   if (statusPart) parts.push(statusPart);

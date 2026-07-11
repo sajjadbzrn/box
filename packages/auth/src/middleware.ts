@@ -86,13 +86,9 @@ async function verifyJwt(token: string, secret: string): Promise<Record<string, 
 
   // Verify signature using Web Crypto API (works on Bun + Workers)
   const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["verify"],
-  );
+  const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, [
+    "verify",
+  ]);
 
   const valid = await crypto.subtle.verify(
     "HMAC",
@@ -145,13 +141,9 @@ export async function signJwt(
   const payloadB64 = b64Encode(JSON.stringify(fullPayload));
   const data = encoder.encode(`${headerB64}.${payloadB64}`);
 
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
+  const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, [
+    "sign",
+  ]);
 
   const sig = await crypto.subtle.sign("HMAC", key, data);
   const sigB64 = b64EncodeBuf(new Uint8Array(sig));

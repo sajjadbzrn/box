@@ -1,6 +1,6 @@
 {
   "name": "boxfw-auth",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Box Framework — pluggable authentication with JWT (Web Crypto) and cookie-based sessions",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.2.1"
+    "boxfw-core": "^0.3.0"
   },
   "devDependencies": {
     "bun-types": "latest"

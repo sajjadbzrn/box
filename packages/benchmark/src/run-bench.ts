@@ -32,7 +32,9 @@ function bench(name: string, fetch: (req: Request) => Promise<Response>, path: s
   const elapsed = performance.now() - start;
   const rps = Math.round((ITERATIONS / elapsed) * 1000);
 
-  console.log(`  ${name.padEnd(6)}  ${String(ITERATIONS).padStart(7)} req  ${elapsed.toFixed(2).padStart(8)} ms  ${String(rps).padStart(7)} req/s`);
+  console.log(
+    `  ${name.padEnd(6)}  ${String(ITERATIONS).padStart(7)} req  ${elapsed.toFixed(2).padStart(8)} ms  ${String(rps).padStart(7)} req/s`,
+  );
   return rps;
 }
 
@@ -48,7 +50,7 @@ honoApp.get("/user/:id", (c) => c.json({ id: c.req.param("id") }));
 
 // ---- Run benchmarks ----
 console.log("\nBox vs Hono Benchmark");
-console.log("=" .repeat(50));
+console.log("=".repeat(50));
 console.log(`Iterations: ${ITERATIONS.toLocaleString()} requests\n`);
 
 console.log("Route: GET /");
@@ -60,6 +62,10 @@ const boxParam = bench("Box", (r) => boxApp.fetch(r), "/user/42");
 const honoParam = bench("Hono", (r) => honoApp.fetch(r), "/user/42");
 
 console.log("\n--- Summary ---");
-console.log(`Static route: Box ${boxStatic.toLocaleString()} vs Hono ${honoStatic.toLocaleString()} req/s (${(boxStatic / honoStatic * 100).toFixed(1)}%)`);
-console.log(`Param route:  Box ${boxParam.toLocaleString()} vs Hono ${honoParam.toLocaleString()} req/s (${(boxParam / honoParam * 100).toFixed(1)}%)`);
+console.log(
+  `Static route: Box ${boxStatic.toLocaleString()} vs Hono ${honoStatic.toLocaleString()} req/s (${((boxStatic / honoStatic) * 100).toFixed(1)}%)`,
+);
+console.log(
+  `Param route:  Box ${boxParam.toLocaleString()} vs Hono ${honoParam.toLocaleString()} req/s (${((boxParam / honoParam) * 100).toFixed(1)}%)`,
+);
 console.log();

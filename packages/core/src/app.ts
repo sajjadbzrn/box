@@ -1,9 +1,9 @@
-import type { Context } from "./context";
-import type { Handler, HttpMethod, Middleware, MatchResult, EnvStore, WebSocketHandler } from "./types";
 import type { ServerWebSocket } from "bun";
-import { Router } from "./router";
+import type { Context } from "./context";
 import { Context as Ctx } from "./context";
 import { compose } from "./middleware";
+import { Router } from "./router";
+import type { EnvStore, Handler, HttpMethod, MatchResult, Middleware, WebSocketHandler } from "./types";
 
 /**
  * The main `Box` application.
@@ -87,10 +87,7 @@ export class App {
 
   private _wsRoutes: Map<string, WebSocketHandler> = new Map();
 
-  ws(
-    path: string,
-    handlers: WebSocketHandler,
-  ): this {
+  ws(path: string, handlers: WebSocketHandler): this {
     this._wsRoutes.set(path, handlers);
     return this;
   }
@@ -145,23 +142,22 @@ export class App {
       return pipeline(ctx, match.handler);
     } catch (error) {
       const ctx = new Ctx(request, {}, activeEnv);
-      return this._errorHandler(
-        error instanceof Error ? error : new Error(String(error)),
-        ctx,
-      );
+      return this._errorHandler(error instanceof Error ? error : new Error(String(error)), ctx);
     }
   };
 
   // ---- Server start ----
 
-  listen(options: {
-    port?: number;
-    hostname?: string;
-    development?: boolean;
-    tls?: Parameters<typeof Bun.serve>[0]["tls"];
-    maxRequestBodySize?: number;
-    [key: string]: unknown;
-  } = {}): ReturnType<typeof Bun.serve> {
+  listen(
+    options: {
+      port?: number;
+      hostname?: string;
+      development?: boolean;
+      tls?: Parameters<typeof Bun.serve>[0]["tls"];
+      maxRequestBodySize?: number;
+      [key: string]: unknown;
+    } = {},
+  ): ReturnType<typeof Bun.serve> {
     const wsRoutes = this._wsRoutes;
     const hasWs = wsRoutes.size > 0;
 

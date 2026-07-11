@@ -1,16 +1,13 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { Context } from "../../packages/core/src/context";
-import { requestLogger } from "../../packages/logger/src/middleware";
 import { createLogger } from "../../packages/logger/src/logger";
+import { requestLogger } from "../../packages/logger/src/middleware";
 
 /**
  * Helper: create a Context from a path and optional init.
  */
 function makeCtx(path = "/", init?: RequestInit): Context {
-  return new Context(
-    new Request(`http://localhost:3000${path}`, init),
-    {},
-  );
+  return new Context(new Request(`http://localhost:3000${path}`, init), {});
 }
 
 /**
@@ -153,8 +150,8 @@ describe("requestLogger middleware", () => {
     await runMiddleware(mw, ctx);
 
     // Log should not contain query params
-    expect(lines[0]).not.toContain("\"q\"");
-    expect(lines[0]).not.toContain("\"test\"");
+    expect(lines[0]).not.toContain('"q"');
+    expect(lines[0]).not.toContain('"test"');
     expect(lines[0]).toContain("/search");
   });
 
@@ -164,7 +161,7 @@ describe("requestLogger middleware", () => {
 
     const mw = requestLogger({ logger: log, logHeaders: true });
     const ctx = makeCtx("/", {
-      headers: { "user-agent": "bun-test", "accept": "application/json" },
+      headers: { "user-agent": "bun-test", accept: "application/json" },
     });
     await runMiddleware(mw, ctx);
 
@@ -181,8 +178,8 @@ describe("requestLogger middleware", () => {
     const mw = requestLogger({ logger: log, logHeaders: true });
     const ctx = makeCtx("/", {
       headers: {
-        "authorization": "Bearer secret-token",
-        "cookie": "sid=abc123",
+        authorization: "Bearer secret-token",
+        cookie: "sid=abc123",
         "x-api-key": "api-key-123",
       },
     });

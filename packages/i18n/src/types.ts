@@ -22,10 +22,7 @@ export interface LocaleConfig {
 /**
  * RTL languages. Extend this set via `addRtlLanguage()`.
  */
-export const RTL_LANGUAGES = new Set([
-  "ar", "arc", "dv", "fa", "ha", "he", "khw", "ks", "ku", "ps",
-  "ur", "yi",
-]);
+export const RTL_LANGUAGES = new Set(["ar", "arc", "dv", "fa", "ha", "he", "khw", "ks", "ku", "ps", "ur", "yi"]);
 
 /**
  * Register additional RTL languages.

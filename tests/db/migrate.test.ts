@@ -1,18 +1,26 @@
-import { describe, it, expect } from "bun:test";
-import { migrate } from "../../packages/db/src/migrate";
 import { Database } from "bun:sqlite";
-import { mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { describe, expect, it } from "bun:test";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { migrate } from "../../packages/db/src/migrate";
 
 describe("migrate()", () => {
   const tmpDir = join(import.meta.dirname, ".tmp-migrations");
   const dbPath = join(import.meta.dirname, ".tmp-test.db");
 
   function cleanup() {
-    try { rmSync(tmpDir, { recursive: true, force: true }); } catch {}
-    try { rmSync(dbPath, { force: true }); } catch {}
-    try { rmSync(dbPath + "-wal", { force: true }); } catch {}
-    try { rmSync(dbPath + "-shm", { force: true }); } catch {}
+    try {
+      rmSync(tmpDir, { recursive: true, force: true });
+    } catch {}
+    try {
+      rmSync(dbPath, { force: true });
+    } catch {}
+    try {
+      rmSync(dbPath + "-wal", { force: true });
+    } catch {}
+    try {
+      rmSync(dbPath + "-shm", { force: true });
+    } catch {}
   }
 
   it("requires drizzle-orm to be installed (skips if not)", async () => {

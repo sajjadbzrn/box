@@ -1,6 +1,6 @@
 import type { Middleware } from "boxfw-core";
-import type { RequestLoggerOptions } from "./types";
 import { createLogger } from "./logger";
+import type { RequestLoggerOptions } from "./types";
 
 /**
  * Generate a short random request ID (8 hex characters).
@@ -28,10 +28,7 @@ function truncatePath(path: string, maxLen = 200): string {
 /**
  * Determine log level based on HTTP status code.
  */
-function statusToLevel(
-  status: number,
-  opts: RequestLoggerOptions,
-): "info" | "warn" | "error" {
+function statusToLevel(status: number, opts: RequestLoggerOptions): "info" | "warn" | "error" {
   if (status >= 500) return (opts.levelServerError ?? "error") as "info" | "warn" | "error";
   if (status >= 400) return (opts.levelClientError ?? "warn") as "info" | "warn" | "error";
   return (opts.levelSuccess ?? "info") as "info" | "warn" | "error";

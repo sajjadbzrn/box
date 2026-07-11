@@ -1,6 +1,6 @@
 {
   "name": "create-boxfw",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Scaffold a new Box Framework project with interactive prompts",
   "type": "module",
   "bin": {
@@ -21,7 +21,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.2.1"
+    "boxfw-core": "^0.3.0"
   },
   "devDependencies": {
     "bun-types": "latest"

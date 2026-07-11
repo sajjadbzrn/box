@@ -1,6 +1,6 @@
 import type { Middleware } from "boxfw-core";
-import type { LocaleConfig } from "./types";
 import { detectLocale } from "./resolver";
+import type { LocaleConfig } from "./types";
 
 /**
  * Middleware that detects the request locale and sets `c.locale`.

@@ -1,5 +1,5 @@
 import type { Context } from "./context";
-import type { Middleware, Handler } from "./types";
+import type { Handler, Middleware } from "./types";
 
 /**
  * Compose an array of middleware into a single pipeline.
@@ -18,9 +18,7 @@ import type { Middleware, Handler } from "./types";
  * // pipeline(ctx, handler) => Response
  * ```
  */
-export function compose(
-  middlewares: Middleware[],
-): (c: Context, finalHandler: Handler) => Promise<Response> {
+export function compose(middlewares: Middleware[]): (c: Context, finalHandler: Handler) => Promise<Response> {
   return async (ctx: Context, finalHandler: Handler): Promise<Response> => {
     let index = -1;
 

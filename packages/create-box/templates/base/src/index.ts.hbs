@@ -3,21 +3,21 @@ import { Box, cors } from "boxfw-core";
 import { createLogger, requestLogger } from "boxfw-logger";
 {{/if}}
 {{#if hasI18n}}
-import { localeDetect, t, rtlMeta } from "boxfw-i18n";
+import { localeDetect, rtlMeta } from "boxfw-i18n";
 {{/if}}
 {{#if hasValidator}}
 import { v, z } from "boxfw-validator";
 {{/if}}
 {{#if hasOpenapi}}
-import { openapi } from "boxfw-openapi";
+import { openapi, type RouteSpec } from "boxfw-openapi";
 {{/if}}
 {{#if hasDrizzle}}
-import { D, typedDb } from "./db";
-import { db } from "./db";
+import { D, typedDb, db } from "./db";
 import * as schema from "../drizzle/schema";
 {{/if}}
 {{#if hasAuth}}
 import { jwt } from "boxfw-auth";
+import { registerAuthRoutes } from "./auth/routes";
 {{/if}}
 
 const app = new Box();
@@ -48,26 +48,47 @@ app.use(jwt({
 {{/if}}
 
 {{#if hasOpenapi}}
-openapi(app, {
-  info: {
+const apiRoutes: RouteSpec[] = [
+  {
+    method: "GET",
+    path: "/",
+    summary: "Welcome message",
+    tags: ["System"],
+  },
+  {
+    method: "GET",
+    path: "/health",
+    summary: "Health check",
+    tags: ["System"],
+  },
+];
+
+app.get("/openapi.json", openapi(
+  {
     title: "{{projectName}}",
     version: "0.0.0",
     description: "{{projectName}} API",
   },
-  path: "/openapi.json",
-});
+  apiRoutes,
+));
 {{/if}}
 
 app.notFound((c) => {
   return c.json({ error: "Not Found" }, 404);
 });
 
-app.onError((c, err) => {
+app.onError((err, c) => {
   {{#if hasLogger}}
   log.error("Unhandled error", { error: err.message });
-  {{/if}}
+  {{else}}
   console.error(err);
+  {{/if}}
   return c.json({ error: "Internal Server Error" }, 500);
+});
+
+// Health check
+app.get("/health", (c) => {
+  return c.json({ status: "ok", uptime: process.uptime() });
 });
 
 // Routes
@@ -103,12 +124,8 @@ app.get("/users", async (c) => {
 {{/if}}
 
 {{#if hasAuth}}
-import { loginRoutes } from "./auth/login";
-import { registerRoutes } from "./auth/register";
-import { meRoutes } from "./auth/me";
-app.use(registerRoutes);
-app.use(loginRoutes);
-app.use(meRoutes);
+// Auth routes
+registerAuthRoutes(app);
 {{/if}}
 
 {{#if isBunRuntime}}
@@ -120,3 +137,5 @@ log.info(`Server running at http://localhost:${port}`);
 console.log(`Server running at http://localhost:${port}`);
 {{/if}}
 {{/if}}
+
+export { app };

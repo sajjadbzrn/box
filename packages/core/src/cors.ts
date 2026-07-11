@@ -62,7 +62,8 @@ export function cors(options: CorsOptions = {}): Middleware {
   const origin = options.origin ?? "*";
   const methods = options.methods ?? "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS";
   const credentials = options.credentials ?? false;
-  const maxAge = options.maxAge ?? 86400;    return async (c, next) => {
+  const maxAge = options.maxAge ?? 86400;
+  return async (c, next) => {
     const requestOrigin = c.req.headers.get("origin") ?? "";
 
     // Determine the response origin header

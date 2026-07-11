@@ -1,4 +1,4 @@
-import type { MigrateConfig, DbDriver } from "./types";
+import type { DbDriver, MigrateConfig } from "./types";
 
 /**
  * Unified migration runner for Drizzle ORM.
@@ -19,11 +19,7 @@ export async function migrate(config: MigrateConfig): Promise<void> {
   await runMigration(driver, db, migrationsFolder);
 }
 
-async function runMigration(
-  driver: DbDriver,
-  db: unknown,
-  migrationsFolder: string,
-): Promise<void> {
+async function runMigration(driver: DbDriver, db: unknown, migrationsFolder: string): Promise<void> {
   switch (driver) {
     case "bun-sqlite": {
       const { migrate } = await import("drizzle-orm/bun-sqlite/migrator");

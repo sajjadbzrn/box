@@ -16,10 +16,10 @@
  * =========================================================================
  */
 
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { drizzle } from "drizzle-orm/bun-sqlite";
 import { Database } from "bun:sqlite";
-import { D, createDbCtx } from "boxfw-db";
+import { createDbCtx, D } from "boxfw-db";
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 // ═════════════════════════════════════════════════════════════════════════
 //  1. TABLES

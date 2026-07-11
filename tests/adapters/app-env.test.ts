@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { App } from "../../packages/core/src/app";
 import { Context } from "../../packages/core/src/context";
 import type { EnvStore } from "../../packages/core/src/types";
@@ -21,7 +21,7 @@ describe("App — env integration", () => {
 
     const req = new Request("http://localhost:3000/test");
     const res = await app.fetch(req);
-    
+
     expect(res.status).toBe(200);
     expect(capturedEnv).toBe("BoxTest");
   });
@@ -39,7 +39,7 @@ describe("App — env integration", () => {
 
     const req = new Request("http://localhost:3000/missing");
     await app.fetch(req);
-    
+
     expect(captured).toBeUndefined();
   });
 

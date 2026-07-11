@@ -32,12 +32,7 @@ export function t(c: Context, key: string, dict: TranslationDict): string {
  * });
  * ```
  */
-export function bilingualError(
-  c: Context,
-  key: string,
-  dict: TranslationDict,
-  status = 400,
-): Response {
+export function bilingualError(c: Context, key: string, dict: TranslationDict, status = 400): Response {
   const message = t(c, key, dict);
   return c.status(status).json({ error: message });
 }

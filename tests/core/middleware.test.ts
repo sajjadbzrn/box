@@ -1,6 +1,6 @@
-import { describe, it, expect } from "bun:test";
-import { compose } from "../../packages/core/src/middleware";
+import { describe, expect, it } from "bun:test";
 import { Context } from "../../packages/core/src/context";
+import { compose } from "../../packages/core/src/middleware";
 
 function makeCtx(path = "/"): Context {
   return new Context(new Request(`http://localhost:3000${path}`));
@@ -36,7 +36,7 @@ describe("compose — onion middleware", () => {
     const pipeline = compose([mw]);
     const res = await pipeline(ctx, handler);
     const text = await res.text();
-    
+
     expect(text).toBe("done");
     expect(order).toEqual(["mw-before", "handler", "mw-after"]);
   });
@@ -67,13 +67,7 @@ describe("compose — onion middleware", () => {
     const pipeline = compose([mw1, mw2]);
     await pipeline(ctx, handler);
 
-    expect(order).toEqual([
-      "1-before",
-      "2-before",
-      "handler",
-      "2-after",
-      "1-after",
-    ]);
+    expect(order).toEqual(["1-before", "2-before", "handler", "2-after", "1-after"]);
   });
 
   it("middleware can short-circuit without calling next", async () => {
@@ -124,9 +118,7 @@ describe("compose — onion middleware", () => {
     const handler = (_c: Context) => new Response("ok");
     const pipeline = compose([mw]);
 
-    await expect(pipeline(ctx, handler)).rejects.toThrow(
-      "next() called multiple times",
-    );
+    await expect(pipeline(ctx, handler)).rejects.toThrow("next() called multiple times");
   });
 
   it("handles errors from handler propagating through middleware", async () => {

@@ -11,5 +11,6 @@ declare const paramsHandler: (c: import("boxfw-core").Context) => Promise<Respon
 declare const bodyHandler: (c: import("boxfw-core").Context) => Promise<Response>;
 declare const queryHandler: (c: import("boxfw-core").Context) => Promise<Response>;
 declare const noSchemaHandler: (c: import("boxfw-core").Context) => Promise<Response>;
-export { paramsHandler, bodyHandler, queryHandler, noSchemaHandler };
+
+export { bodyHandler, noSchemaHandler, paramsHandler, queryHandler };
 //# sourceMappingURL=type-inference.test.d.ts.map

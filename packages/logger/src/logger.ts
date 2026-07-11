@@ -1,6 +1,6 @@
-import type { LogEntry, LogLevel, LoggerInterface, LoggerOptions } from "./types";
-import { LOG_LEVEL_NUMBERS } from "./types";
 import { createFormatter } from "./formatters";
+import type { LogEntry, LoggerInterface, LoggerOptions, LogLevel } from "./types";
+import { LOG_LEVEL_NUMBERS } from "./types";
 
 /**
  * Box Logger — a structured logger for the Box framework.

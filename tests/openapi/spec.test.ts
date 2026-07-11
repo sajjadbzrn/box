@@ -1,15 +1,12 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { openapi, zodToOpenApi } from "../../packages/openapi/src/index";
 
 describe("openapi()", () => {
   it("generates a valid OpenAPI 3.0 document", () => {
-    const handler = openapi(
-      { title: "Test API", version: "1.0.0", description: "A test" },
-      [
-        { method: "GET", path: "/users", summary: "List users", tags: ["Users"] },
-        { method: "POST", path: "/users", summary: "Create user", body: { name: "User name", email: "Email" } },
-      ],
-    );
+    const handler = openapi({ title: "Test API", version: "1.0.0", description: "A test" }, [
+      { method: "GET", path: "/users", summary: "List users", tags: ["Users"] },
+      { method: "POST", path: "/users", summary: "Create user", body: { name: "User name", email: "Email" } },
+    ]);
 
     const res = handler();
     expect(res.headers.get("content-type")).toContain("json");
@@ -25,17 +22,18 @@ describe("openapi()", () => {
   });
 
   it("converts :param paths to {param}", () => {
-    const handler = openapi(
-      { title: "API", version: "1.0.0" },
-      [{ method: "GET", path: "/user/:id", params: { id: "User ID" } }],
-    );
+    const handler = openapi({ title: "API", version: "1.0.0" }, [
+      { method: "GET", path: "/user/:id", params: { id: "User ID" } },
+    ]);
 
-    return handler().json().then((doc: any) => {
-      expect(doc.paths["/user/{id}"]).toBeDefined();
-      expect(doc.paths["/user/{id}"].get.parameters[0].name).toBe("id");
-      expect(doc.paths["/user/{id}"].get.parameters[0].in).toBe("path");
-      expect(doc.paths["/user/{id}"].get.parameters[0].required).toBe(true);
-    });
+    return handler()
+      .json()
+      .then((doc: any) => {
+        expect(doc.paths["/user/{id}"]).toBeDefined();
+        expect(doc.paths["/user/{id}"].get.parameters[0].name).toBe("id");
+        expect(doc.paths["/user/{id}"].get.parameters[0].in).toBe("path");
+        expect(doc.paths["/user/{id}"].get.parameters[0].required).toBe(true);
+      });
   });
 });
 

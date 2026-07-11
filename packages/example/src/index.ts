@@ -49,18 +49,18 @@
 //  1. IMPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { Box, cors } from "boxfw-core";
 import { bunEnv } from "boxfw-adapters";
-import { v } from "boxfw-validator";
-import { z } from "zod";
-import { localeDetect, t, rtlMeta, bilingualError } from "boxfw-i18n";
-import type { TranslationDict } from "boxfw-i18n";
 import { jwt, signJwt } from "boxfw-auth";
-import { openapi } from "boxfw-openapi";
+import { Box, cors } from "boxfw-core";
+import type { TranslationDict } from "boxfw-i18n";
+import { bilingualError, localeDetect, rtlMeta, t } from "boxfw-i18n";
 import { createLogger, requestLogger } from "boxfw-logger";
-import { eq, and, desc, asc, like, count, sql } from "drizzle-orm";
+import { openapi } from "boxfw-openapi";
+import { v } from "boxfw-validator";
 import type { SQL } from "drizzle-orm";
-import { createDatabase, typedDb, D, users, tasks } from "./db";
+import { and, asc, count, desc, eq, like, sql } from "drizzle-orm";
+import { z } from "zod";
+import { createDatabase, D, tasks, typedDb, users } from "./db";
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  2. INITIALIZATION
@@ -176,11 +176,7 @@ app.post(
         const { email, name, password } = c.validated.body;
 
         // Check if email already exists
-        const existing = await typedDb(c)
-          .select()
-          .from(users)
-          .where(eq(users.email, email))
-          .limit(1);
+        const existing = await typedDb(c).select().from(users).where(eq(users.email, email)).limit(1);
 
         if (existing.length > 0) {
           return bilingualError(c, "email_taken", dict, 409);
@@ -194,10 +190,7 @@ app.post(
           .join("");
 
         // Insert user
-        const result = await typedDb(c)
-          .insert(users)
-          .values({ email, name, password: hashedPassword })
-          .returning();
+        const result = await typedDb(c).insert(users).values({ email, name, password: hashedPassword }).returning();
 
         const user = result[0]!;
 
@@ -353,21 +346,27 @@ app.get("/api/tasks", async (c) => {
   const whereClause = and(...conditions);
 
   // Get total count for pagination metadata
-  const totalResult = await typedDb(c)
-    .select({ total: count() })
-    .from(tasks)
-    .where(whereClause);
+  const totalResult = await typedDb(c).select({ total: count() }).from(tasks).where(whereClause);
 
   const total = totalResult[0]?.total ?? 0;
 
   // Determine sort column and order
-  const orderByClause = sortBy === "priority"
-    ? sortOrder === "asc" ? asc(tasks.priority) : desc(tasks.priority)
-    : sortBy === "due_date"
-      ? sortOrder === "asc" ? asc(tasks.dueDate) : desc(tasks.dueDate)
-      : sortBy === "updated_at"
-        ? sortOrder === "asc" ? asc(tasks.updatedAt) : desc(tasks.updatedAt)
-        : sortOrder === "asc" ? asc(tasks.createdAt) : desc(tasks.createdAt);
+  const orderByClause =
+    sortBy === "priority"
+      ? sortOrder === "asc"
+        ? asc(tasks.priority)
+        : desc(tasks.priority)
+      : sortBy === "due_date"
+        ? sortOrder === "asc"
+          ? asc(tasks.dueDate)
+          : desc(tasks.dueDate)
+        : sortBy === "updated_at"
+          ? sortOrder === "asc"
+            ? asc(tasks.updatedAt)
+            : desc(tasks.updatedAt)
+          : sortOrder === "asc"
+            ? asc(tasks.createdAt)
+            : desc(tasks.createdAt);
 
   // Fetch the paginated, filtered, sorted results
   const taskList = await typedDb(c)
@@ -631,33 +630,83 @@ app.get(
     [
       { method: "GET", path: "/", summary: "Welcome with i18n and API overview", tags: ["System"] },
       {
-        method: "POST", path: "/api/auth/register", summary: "Register a new user", tags: ["Auth"],
+        method: "POST",
+        path: "/api/auth/register",
+        summary: "Register a new user",
+        tags: ["Auth"],
         body: { email: "User email", name: "Display name", password: "Password (min 6 chars)" },
       },
       {
-        method: "POST", path: "/api/auth/login", summary: "Login with email and password", tags: ["Auth"],
+        method: "POST",
+        path: "/api/auth/login",
+        summary: "Login with email and password",
+        tags: ["Auth"],
         body: { email: "User email", password: "User password" },
       },
       { method: "GET", path: "/api/auth/me", summary: "Get current user profile", tags: ["Auth"] },
       {
-        method: "GET", path: "/api/tasks", summary: "List tasks (paginated, filterable, sortable)",
-        tags: ["Tasks"], params: {},
-        query: { page: "Page number (default: 1)", limit: "Items per page (default: 20)", status: "Filter by status", priority: "Filter by priority", q: "Search query", sortBy: "Sort field", sortOrder: "asc or desc" },
+        method: "GET",
+        path: "/api/tasks",
+        summary: "List tasks (paginated, filterable, sortable)",
+        tags: ["Tasks"],
+        params: {},
+        query: {
+          page: "Page number (default: 1)",
+          limit: "Items per page (default: 20)",
+          status: "Filter by status",
+          priority: "Filter by priority",
+          q: "Search query",
+          sortBy: "Sort field",
+          sortOrder: "asc or desc",
+        },
       },
       {
-        method: "POST", path: "/api/tasks", summary: "Create a new task", tags: ["Tasks"],
-        body: { title: "Task title (required)", description: "Task description", priority: "low, medium, high, or urgent", dueDate: "ISO-8601 due date" },
+        method: "POST",
+        path: "/api/tasks",
+        summary: "Create a new task",
+        tags: ["Tasks"],
+        body: {
+          title: "Task title (required)",
+          description: "Task description",
+          priority: "low, medium, high, or urgent",
+          dueDate: "ISO-8601 due date",
+        },
       },
-      { method: "GET", path: "/api/tasks/:id", summary: "Get a task by ID", tags: ["Tasks"], params: { id: "Task ID" } },
       {
-        method: "PUT", path: "/api/tasks/:id", summary: "Update a task", tags: ["Tasks"],
+        method: "GET",
+        path: "/api/tasks/:id",
+        summary: "Get a task by ID",
+        tags: ["Tasks"],
         params: { id: "Task ID" },
-        body: { title: "Task title", description: "Task description", status: "todo, in_progress, done, or cancelled", priority: "low, medium, high, or urgent", dueDate: "ISO-8601 due date or null" },
       },
-      { method: "DELETE", path: "/api/tasks/:id", summary: "Delete a task", tags: ["Tasks"], params: { id: "Task ID" } },
       {
-        method: "PATCH", path: "/api/tasks/:id/status", summary: "Quick-update task status", tags: ["Tasks"],
-        params: { id: "Task ID" }, body: { status: "todo, in_progress, done, or cancelled" },
+        method: "PUT",
+        path: "/api/tasks/:id",
+        summary: "Update a task",
+        tags: ["Tasks"],
+        params: { id: "Task ID" },
+        body: {
+          title: "Task title",
+          description: "Task description",
+          status: "todo, in_progress, done, or cancelled",
+          priority: "low, medium, high, or urgent",
+          dueDate: "ISO-8601 due date or null",
+        },
+      },
+      {
+        method: "DELETE",
+        path: "/api/tasks/:id",
+        summary: "Delete a task",
+        tags: ["Tasks"],
+        params: { id: "Task ID" },
+      },
+      {
+        method: "PATCH",
+        path: "/api/tasks/:id/status",
+        summary: "Quick-update task status",
+        tags: ["Tasks"],
+        params: { id: "Task ID" },
+        body: { status: "todo, in_progress, done, or cancelled" },
       },
     ],
   ),

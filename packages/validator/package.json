@@ -1,6 +1,6 @@
 {
   "name": "boxfw-validator",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Box Framework — Zod-based request validation with full TypeScript type inference",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "boxfw-core": "^0.2.1",
+    "boxfw-core": "^0.3.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {

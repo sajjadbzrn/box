@@ -1,12 +1,12 @@
-import { describe, it, expect } from "bun:test";
-import { D, createDbCtx } from "../../packages/db/src/index";
+import { describe, expect, it } from "bun:test";
+import { createDbCtx, D } from "../../packages/db/src/index";
 
 describe("D() middleware", () => {
   it("injects the client into c.__db so c.db is accessible", async () => {
     const mockDb = { select: () => ({ from: () => [] }) };
     const mw = D(mockDb);
 
-    let capturedDb: unknown = null;
+    const capturedDb: unknown = null;
 
     const nextCalled = { called: false };
     const fakeNext = async () => {
@@ -65,7 +65,9 @@ describe("D() middleware", () => {
 
     // Define a db getter to simulate the Context class
     Object.defineProperty(ctx, "db", {
-      get() { return (this as Record<string, unknown>).__db; },
+      get() {
+        return (this as Record<string, unknown>).__db;
+      },
     });
 
     mw(ctx as any, async () => new Response("ok"));

@@ -1,4 +1,4 @@
-import type { OpenApiInfo, OpenApiDoc, RouteSpec } from "./types";
+import type { OpenApiDoc, OpenApiInfo, RouteSpec } from "./types";
 
 /**
  * Generate an OpenAPI 3.0 spec from registered route specs.
@@ -21,7 +21,7 @@ import type { OpenApiInfo, OpenApiDoc, RouteSpec } from "./types";
  * ]));
  * ```
  */
-export function openapi(info: OpenApiInfo, routes: RouteSpec[]): (() => Response) {
+export function openapi(info: OpenApiInfo, routes: RouteSpec[]): () => Response {
   return () => {
     const doc: OpenApiDoc = {
       openapi: "3.0.3",
@@ -61,7 +61,7 @@ export function openapi(info: OpenApiInfo, routes: RouteSpec[]): (() => Response
           schema: { type: "string" },
           description: desc,
         }));
-        operation.parameters = [...(operation.parameters as unknown[] ?? []), ...qParams];
+        operation.parameters = [...((operation.parameters as unknown[]) ?? []), ...qParams];
       }
 
       // Body
@@ -72,10 +72,7 @@ export function openapi(info: OpenApiInfo, routes: RouteSpec[]): (() => Response
               schema: {
                 type: "object",
                 properties: Object.fromEntries(
-                  Object.entries(route.body).map(([key, desc]) => [
-                    key,
-                    { type: "string", description: desc },
-                  ]),
+                  Object.entries(route.body).map(([key, desc]) => [key, { type: "string", description: desc }]),
                 ),
               },
             },

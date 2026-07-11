@@ -144,7 +144,7 @@ export class Router {
     firstChar: string,
     rest: string[],
     handler: Handler,
-    commonLen: number
+    commonLen: number,
   ): void {
     // Create a new intermediate node for the common prefix
     const commonPrefix = segment.slice(0, commonLen);
@@ -174,18 +174,13 @@ export class Router {
   /**
    * Handle the case where segment is longer than the common prefix.
    */
-  private insertSplit(
-    node: RadixNode,
-    segment: string,
-    rest: string[],
-    handler: Handler,
-    commonLen: number
-  ): void {
+  private insertSplit(node: RadixNode, segment: string, rest: string[], handler: Handler, commonLen: number): void {
     // This happens when the new segment fully contains child's prefix
     // but has additional characters
-    const remaining = segment.slice(commonLen);
-    const newChild = new RadixNode(remaining);
-    node.children.set(remaining[0]!, newChild);
+    const segRemaining = segment.slice(commonLen);
+    const newChild = new RadixNode(segRemaining);
+    const firstChar = segRemaining[0]!;
+    node.children.set(firstChar, newChild);
     this.insert(newChild, rest, handler);
   }
 
@@ -247,9 +242,8 @@ export class Router {
 
     // Try wildcard
     if (node.wildcardHandler) {
-      const remaining = segment;
       if (rest.length > 0) {
-        params["*"] = segment + "/" + rest.join("/");
+        params["*"] = `${segment}/${rest.join("/")}`;
       } else {
         params["*"] = segment;
       }

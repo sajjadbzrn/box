@@ -15,10 +15,7 @@
  * const db = createBunSqlite({ path: "app.db", schema: mySchema });
  * ```
  */
-export async function createBunSqlite(options: {
-  path: string;
-  schema: Record<string, unknown>;
-}): Promise<unknown> {
+export async function createBunSqlite(options: { path: string; schema: Record<string, unknown> }): Promise<unknown> {
   const { Database } = await import("bun:sqlite");
   const { drizzle } = await import("drizzle-orm/bun-sqlite");
   const sqlite = new Database(options.path, { create: true });
@@ -36,10 +33,7 @@ export async function createBunSqlite(options: {
  * app.use(D((c) => createD1Client(c.env("DB"), mySchema)));
  * ```
  */
-export async function createD1Client(
-  binding: unknown,
-  schema: Record<string, unknown>,
-): Promise<unknown> {
+export async function createD1Client(binding: unknown, schema: Record<string, unknown>): Promise<unknown> {
   const { drizzle } = await import("drizzle-orm/d1");
   return drizzle(binding, { schema });
 }

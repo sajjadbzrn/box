@@ -31,9 +31,10 @@ import type { Middleware } from "boxfw-core";
  */
 export function D<C>(clientOrFactory: C | ((c: import("boxfw-core").Context) => C)): Middleware {
   return async (c, next) => {
-    const client = typeof clientOrFactory === "function"
-      ? (clientOrFactory as (c: import("boxfw-core").Context) => C)(c)
-      : clientOrFactory;
+    const client =
+      typeof clientOrFactory === "function"
+        ? (clientOrFactory as (c: import("boxfw-core").Context) => C)(c)
+        : clientOrFactory;
 
     (c as Record<string, unknown>).__db = client;
     return next();

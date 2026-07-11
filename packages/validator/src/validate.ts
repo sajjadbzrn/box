@@ -21,11 +21,7 @@ function extractIssues(error: unknown, prefix: string): ValidationIssue[] {
 /**
  * Build a structured 400 JSON response for validation failures.
  */
-export function validationError(
-  c: Context,
-  message: string,
-  issues: ValidationIssue[],
-): Response {
+export function validationError(c: Context, message: string, issues: ValidationIssue[]): Response {
   return c.status(400).json({
     error: message,
     issues,
@@ -35,9 +31,7 @@ export function validationError(
 /**
  * Internal result from a schema validation — either validated data or an error Response.
  */
-type ValidationResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; response: Response };
+type ValidationResult<T> = { ok: true; data: T } | { ok: false; response: Response };
 
 /**
  * Run a single schema validation and return the validated data or a 400 `Response`.

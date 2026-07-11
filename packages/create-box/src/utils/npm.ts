@@ -1,6 +1,6 @@
-import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 const FETCH_TIMEOUT = 5000;
@@ -44,11 +44,11 @@ async function fetchLatestVersion(): Promise<string | null> {
       signal: ctrl.signal,
     });
     if (res.ok) {
-      const data = await res.json() as { version: string };
+      const data = (await res.json()) as { version: string };
       return data.version;
     }
-  } catch {}
-  finally {
+  } catch {
+  } finally {
     clearTimeout(timer);
   }
   return null;

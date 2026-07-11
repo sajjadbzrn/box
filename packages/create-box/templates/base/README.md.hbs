@@ -1,37 +1,72 @@
 # {{projectName}}
 
-A [Box Framework](https://github.com/sajjadbzrn/box) project.
+A [Box Framework](https://github.com/sajjadbzrn/box) project — batteries-included backend for Bun & Cloudflare Workers.
 
-## Getting Started
+## Quick Start
 
 ```bash
 # Install dependencies
 bun install
 
-# Start development server
+# Start development server (with hot-reload)
 bun dev
 ```
 
-The server will start at `http://localhost:3000`.
+The server will start at **http://localhost:3000**.
 
-{{#if hasTest}}
-## Testing
+## Available Scripts
 
-```bash
-bun test
-```
+| Command | Description |
+|---------|-------------|
+| `bun dev` | Start dev server with hot-reload |
+| `bun test` | Run tests |
+| `bun typecheck` | Type-check without emitting |
+| `bun boxfw:update` | Update all BoxFW packages to latest |
+{{#if hasDrizzle}}
+| `bun db:generate` | Generate Drizzle migrations |
+| `bun db:migrate` | Run database migrations |
+{{/if}}
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | Welcome message |
+| `GET` | `/health` | Health check |
+{{#if hasValidator}}
+| `GET` | `/hello?name=World` | Zod validation example |
+{{/if}}
+{{#if hasDrizzle}}
+| `GET` | `/users` | List all users |
+{{/if}}
+{{#if hasOpenapi}}
+| `GET` | `/openapi.json` | OpenAPI spec |
+{{/if}}
+{{#if hasAuth}}
+| `POST` | `/api/auth/login` | Login |
+| `GET` | `/api/auth/me` | Get current user |
 {{/if}}
 
 {{#if hasDrizzle}}
 ## Database
 
 ```bash
-# Generate migration
+# Generate migration after schema changes
 bun db:generate
 
-# Run migration
+# Run pending migrations
 bun db:migrate
 ```
+
+Schema files are in `drizzle/schema.ts`.
+{{/if}}
+
+{{#if hasI18n}}
+## i18n
+
+Locales are in `locales/`. Supported languages:
+- **English** (`en`)
+- **Farsi** (`fa`)
 {{/if}}
 
 {{#if hasCloudflare}}
@@ -42,22 +77,38 @@ bunx wrangler deploy
 ```
 {{/if}}
 
-## Scripts
-
-{{#if hasScripts}}
-{{scripts}}
-{{/if}}
-
 ## Project Structure
 
 ```
 {{projectName}}/
 ├── src/
-│   ├── index.ts          # App entry point
+│   ├── index.ts          # App entry point & routes
+{{#if hasDrizzle}}
+│   └── db.ts             # Database setup
+{{/if}}
 {{#if hasAuth}}
-│   └── auth/             # Auth routes
+│   └── auth/
+│       └── routes.ts     # Auth routes
+{{/if}}
+{{#if hasDrizzle}}
+├── drizzle/
+│   ├── schema.ts         # Database schema
+│   └── migrations/       # Generated migrations
 {{/if}}
 ├── package.json
 ├── tsconfig.json
-└── .env.example
+└── .env.example          # Environment variables
 ```
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+## Learn More
+
+- [Box Framework Docs](https://github.com/sajjadbzrn/box)
+- [Bun Documentation](https://bun.sh/docs)
