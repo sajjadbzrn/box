@@ -17,7 +17,11 @@ function buildRequest(path: string): Request {
   return new Request(`http://localhost:3000${path}`);
 }
 
-function bench(name: string, fetch: (req: Request) => Promise<Response>, path: string) {
+function bench(
+  name: string,
+  fetch: (req: Request) => Promise<Response>,
+  path: string,
+) {
   // Warmup
   for (let i = 0; i < WARMUP; i++) {
     fetch(buildRequest(path));
@@ -55,11 +59,11 @@ console.log(`Iterations: ${ITERATIONS.toLocaleString()} requests\n`);
 
 console.log("Route: GET /");
 const boxStatic = bench("Box", (r) => boxApp.fetch(r), "/");
-const honoStatic = bench("Hono", (r) => honoApp.fetch(r), "/");
+const honoStatic = bench("Hono", async (r) => honoApp.fetch(r), "/");
 
 console.log("\nRoute: GET /user/:id");
 const boxParam = bench("Box", (r) => boxApp.fetch(r), "/user/42");
-const honoParam = bench("Hono", (r) => honoApp.fetch(r), "/user/42");
+const honoParam = bench("Hono", async (r) => honoApp.fetch(r), "/user/42");
 
 console.log("\n--- Summary ---");
 console.log(
